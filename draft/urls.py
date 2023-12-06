@@ -5,7 +5,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.draft, name='draft'),
+    # path('', views.home_view, name='home_view'),
 ]
 
 if settings.DEBUG:
