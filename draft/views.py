@@ -7,29 +7,37 @@ from collections import Counter
 
 
 def home_view(request, *args, **kwargs):
-    global attributeid1, attributeid2
+    # global attributeid1, attributeid2
     context={}
     if request.method == 'POST':
         uploaded_file = request.FILES['document']
-        attributeid1 = request.POST.get('attributeid1')
-        attributeid2 = request.POST.get('attributeid2')
+        # attributeid1 = request.POST.get('attributeid1')
+        # attributeid2 = request.POST.get('attributeid2')
 
         # print(uploaded_file)
-        print(attributeid1)
-        print(attributeid2)
         if uploaded_file.name.endswith('csv'):
             # save the file in media folder
             savefile = FileSystemStorage()
             name = savefile.save(uploaded_file.name, uploaded_file)
-
             #know where to save the file
             d = os.getcwd() #get the current directory
             file_directory = d+'/media/'+name
+            # getOptions(request)
             readfile(file_directory)
-            return redirect(results)
+            return redirect(options)
         else:
             messages.warning(request, 'File was not uploaded, please use csv file extension')
     return render(request, "draft/myfirst.html", {})
+
+def options(request):
+    global attributeid1, attributeid2
+    if request.method == 'POST':
+        attributeid1 = request.POST.get('attributeid1')
+        attributeid2 = request.POST.get('attributeid2')
+        print(attributeid1)
+        print(attributeid2)
+        return redirect(results)
+    return render(request, "draft/options.html", {})
 
 def readfile(filename):
     global data
