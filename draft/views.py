@@ -16,7 +16,7 @@ def home_view(request, *args, **kwargs):
 
         # print(uploaded_file)
         print(attributeid1)
-        print(attributeid1)
+        print(attributeid2)
         if uploaded_file.name.endswith('csv'):
             # save the file in media folder
             savefile = FileSystemStorage()
@@ -63,6 +63,9 @@ def results(request):
     for y in datas:
         listdatas.append(y)
 
+    print(listlabels)
+    print(listdatas)
+
     # for y in values:
     #     listvalues.append(y)
 
@@ -72,7 +75,7 @@ def results(request):
         # 'listvalues':listvalues,
     }
 
-    return render(request, "results.html", context)
+    return render(request, "draft/results.html", context)
 ####
 # def draft(request):
 #     context = {}

@@ -22,7 +22,7 @@ from draft import views
 
 urlpatterns = [
                   path('', views.home_view, name='home_view'),
-                  path('results', views.results, name='results'),
+                  path('results/', views.results, name='results'),
                   # path('', include('draft.urls')),
                   path('admin/', admin.site.urls),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
