@@ -1,0 +1,56 @@
+
+{% block content %}
+<h2>Upload File</h2>
+<form method="post" enctype="multipart/form-data" action="{% url 'upload_file' %}">
+    {% csrf_token %}
+
+    <!-- Custom file input -->
+    <div class="custom-file">
+        <input type="file" class="custom-file-input" id="customFile" name="file" onchange="updateLabel()">
+        <label class="custom-file-label" for="customFile">Choose file</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Upload</button>
+</form>
+
+<!-- Hiển thị danh sách các file đã tải lên -->
+<h3>Danh sách các file đã tải lên</h3>
+<ul>
+    {% for file in uploaded_files %}
+        <li>{{ file.file.name }} - {{ file.uploaded_at }}</li>
+    {% endfor %}
+</ul>
+
+<!-- Vẽ biểu đồ sử dụng mã JavaScript -->
+<canvas id="circleChart" width="400" height="300"></canvas>
+<script>
+    function updateLabel() {
+        var input = document.getElementById('customFile');
+        var label = document.querySelector('.custom-file-label');
+        label.textContent = input.files[0].name;
+    }
+
+    var ctx = document.getElementById('circleChart').getContext('2d');
+    var circleChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for file in uploaded_files %} '{{ file.file.name }}', {% endfor %}],
+            datasets: [{
+                data: [{% for file in uploaded_files %} 1, {% endfor %}],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+        }
+    });
+</script>
+{% endblock %}
