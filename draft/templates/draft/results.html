@@ -15,12 +15,12 @@
 
 <script>
     var colorArray = [
-    '#dd0453', '#fdfd05', '#66E64D', '#0660e7', '#9900B3',
-     '#d07201', '#14b300','#06d2a6','#f8061a','#c45850',
-	'#66664D', '#d6d6d7', '#76008f', '#4DB3FF', '#1AB399',
-	'#ec92d1', '#33991A', '#ba8383', '#B3B31A', '#00E680',
-	'#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
-	'#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'];
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)']
     new Chart(document.getElementById("pie-chart"), {
     type: 'bar',
     data: {
@@ -28,6 +28,15 @@
       datasets: [{
         label: "",
         backgroundColor: colorArray,
+          borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+          borderWidth: 1,
         data: {{ listdatas|safe }}
       }]
     },
