@@ -42,7 +42,7 @@ def options(request):
 def readfile(filename):
     global data
     my_file = pd.read_csv(filename, sep='[:;,|_]', engine='python')
-    data = pd.DataFrame(data=my_file, index=None)
+    data = pd.DataFrame(data = my_file, index=None)
     print(data)
 
 def results(request):
