@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from . models import CountryData
+from .models import CountryData, UploadedFile
 from .forms import CountryDataFrom
 
 # Create your views here.
@@ -23,25 +23,54 @@ def index(request):
 
 
 
-from django.shortcuts import render, redirect
-from .models import UploadedFile
-from .forms import UploadFileForm
-from django.http import HttpResponse
 
-from django.shortcuts import render, redirect
-from .models import UploadedFile
+# from django.shortcuts import render, redirect
+# from .models import UploadedFile
+# from .forms import UploadFileForm
+#
+# def upload_file(request):
+#     if request.method == 'POST':
+#         form = UploadFileForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             uploaded_file = form.save(commit=False)
+#             uploaded_file.save()
+#
+#             # Cập nhật biểu đồ ở đây (sử dụng uploaded_file)
+#
+#             return redirect('upload_file')  # Hoặc chuyển hướng đến trang khác nếu cần
+#     else:
+#         form = UploadFileForm()
+#
+#     uploaded_files = UploadedFile.objects.all()
+#
+#     return render(request, 'dashboard/upload_file.html', {'form': form, 'uploaded_files': uploaded_files})
+#
+
+# your_app/views.py
+
+from .util import read_csv
+from .models import CountryData
 from .forms import UploadFileForm
+from django.shortcuts import render, redirect
 
 def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             uploaded_file = form.save(commit=False)
+
+            # Đọc dữ liệu từ file CSV
+            csv_data = read_csv(uploaded_file.file.path)
+
+            # Lưu trữ dữ liệu vào cơ sở dữ liệu
+            for row in csv_data:
+                # Tạo một bản ghi mới cho mỗi dòng trong CSV
+                new_record = CountryData(country=row[0], population=row[1])
+                new_record.save()
+
             uploaded_file.save()
 
-            # Cập nhật biểu đồ ở đây (sử dụng uploaded_file)
-
-            return redirect('upload_file')  # Hoặc chuyển hướng đến trang khác nếu cần
+            return redirect('upload_file')
     else:
         form = UploadFileForm()
 
