@@ -22,32 +22,6 @@ def index(request):
     return render(request, 'dashboard/index.html', context)
 
 
-
-
-# from django.shortcuts import render, redirect
-# from .models import UploadedFile
-# from .forms import UploadFileForm
-#
-# def upload_file(request):
-#     if request.method == 'POST':
-#         form = UploadFileForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             uploaded_file = form.save(commit=False)
-#             uploaded_file.save()
-#
-#             # Cập nhật biểu đồ ở đây (sử dụng uploaded_file)
-#
-#             return redirect('upload_file')  # Hoặc chuyển hướng đến trang khác nếu cần
-#     else:
-#         form = UploadFileForm()
-#
-#     uploaded_files = UploadedFile.objects.all()
-#
-#     return render(request, 'dashboard/upload_file.html', {'form': form, 'uploaded_files': uploaded_files})
-#
-
-# your_app/views.py
-
 from .util import read_csv
 from .models import CountryData
 from .forms import UploadFileForm
@@ -77,3 +51,30 @@ def upload_file(request):
     uploaded_files = UploadedFile.objects.all()
 
     return render(request, 'dashboard/upload_file.html', {'form': form, 'uploaded_files': uploaded_files})
+
+
+
+
+# from django.shortcuts import render, redirect
+# from .models import UploadedFile
+# from .forms import UploadFileForm
+#
+# def upload_file(request):
+#     if request.method == 'POST':
+#         form = UploadFileForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             uploaded_file = form.save(commit=False)
+#             uploaded_file.save()
+#
+#             # Cập nhật biểu đồ ở đây (sử dụng uploaded_file)
+#
+#             return redirect('upload_file')  # Hoặc chuyển hướng đến trang khác nếu cần
+#     else:
+#         form = UploadFileForm()
+#
+#     uploaded_files = UploadedFile.objects.all()
+#
+#     return render(request, 'dashboard/upload_file.html', {'form': form, 'uploaded_files': uploaded_files})
+#
+
+# your_app/views.py
