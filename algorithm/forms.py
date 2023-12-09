@@ -3,6 +3,7 @@ from django import forms
 ALGORITHM_CHOICES= [
     ('bubbleSort', 'bubbleSort'),
     ('insertionSort', 'insertionSort'),
+    ('quicksort', 'quicksort'),
     ]
 
 class NameForm(forms.Form):
