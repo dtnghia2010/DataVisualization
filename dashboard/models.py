@@ -12,10 +12,14 @@ class CountryData(models.Model):
         return f'{self.country}-{self.population}'
 
 
+# models.py
 class UploadedFile(models.Model):
     file = models.FileField(upload_to='uploads/')
+    attribute1 = models.CharField(("atrribute1"),max_length=255)  # Thêm thuộc tính
+    attribute2 = models.CharField(("attribute2"),max_length=255)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.file.name
+
 

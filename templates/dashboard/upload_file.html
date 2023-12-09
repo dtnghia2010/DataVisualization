@@ -10,6 +10,10 @@
         <label class="custom-file-label" for="customFile">Choose file</label>
     </div>
 
+    <!-- Thêm hai trường mới -->
+    Attribute 1: <input type="text" name="attribute1" required>
+    Attribute 2: <input type="text" name="attribute2" required>
+
     <button type="submit" class="btn btn-primary mt-3">Upload</button>
 </form>
 
@@ -21,7 +25,7 @@
     {% endfor %}
 </ul>
 
-<!-- Vẽ biểu đồ sử dụng mã JavaScript -->
+<!-- Vẽ biểu đồ -->
 <canvas id="circleChart" width="400" height="300"></canvas>
 <script>
     function updateLabel() {

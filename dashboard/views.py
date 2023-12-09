@@ -27,6 +27,7 @@ from .models import CountryData
 from .forms import UploadFileForm
 from django.shortcuts import render, redirect
 
+# views.py
 def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -39,7 +40,7 @@ def upload_file(request):
             # Lưu trữ dữ liệu vào cơ sở dữ liệu
             for row in csv_data:
                 # Tạo một bản ghi mới cho mỗi dòng trong CSV
-                new_record = CountryData(country=row[0], population=row[1])
+                new_record = CountryData(attribute1=uploaded_file.attribute1, attribute2=uploaded_file.attribute2, country=row[0], population=row[1])
                 new_record.save()
 
             uploaded_file.save()
