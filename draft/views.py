@@ -24,7 +24,6 @@ def home_view(request, *args, **kwargs):
             file_directory = d + "/media/" + name
             # getOptions(request)
             readfile(file_directory)
-            return redirect(options)
         else:
             messages.warning(
                 request, "File was not uploaded, please use csv file extension"
