@@ -15,8 +15,8 @@ class CountryData(models.Model):
 # models.py
 class UploadedFile(models.Model):
     file = models.FileField(upload_to='uploads/')
-    attribute1 = models.CharField(("atrribute1"),max_length=255)  # Thêm thuộc tính
-    attribute2 = models.CharField(("attribute2"),max_length=255)
+    Country = models.CharField(("Country"),max_length=255)  # Thêm thuộc tính
+    Population = models.IntegerField(("Population"))
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
