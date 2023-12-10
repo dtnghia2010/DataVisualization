@@ -9,16 +9,14 @@
         <input type="file" class="custom-file-input" id="customFile" name="file" onchange="updateLabel()">
         <label class="custom-file-label" for="customFile">Choose file</label>
     </div>
+    <h3>Please Upload CSV File</h3>
 
-    <!-- Thêm hai trường mới -->
-    Attribute 1: <input type="text" name="attribute1" required>
-    Attribute 2: <input type="text" name="attribute2" required>
 
     <button type="submit" class="btn btn-primary mt-3">Upload</button>
 </form>
 
 <!-- Hiển thị danh sách các file đã tải lên -->
-<h3>Danh sách các file đã tải lên</h3>
+
 <ul>
     {% for file in uploaded_files %}
         <li>{{ file.file.name }} - {{ file.uploaded_at }}</li>
