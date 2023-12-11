@@ -8,6 +8,11 @@ from tablib import Dataset
 
 from .models import CountryData, UploadedFile
 from .forms import CountryDataFrom
+import csv
+import io
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
 
 
 # Create your views here.
@@ -18,30 +23,38 @@ def index(request):
 
 def add_data(request):
     data = CountryData.objects.all()
+
     if request.method == 'POST':
         form = CountryDataFrom(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('/')
+            new_data = form.save()
+            new_data.refresh_from_db()
+
+            # Thực hiện các bước vẽ biểu đồ với dữ liệu mới
+            data_for_chart = CountryData.objects.all()
+
+            # Truyền dữ liệu biểu đồ vào context để sử dụng trong template
+            context = {
+                'data': data_for_chart,
+                'form': form,
+            }
+            # Render template với context đã cập nhật
+            return render(request, 'dashboard/add_data.html', context)
     else:
         form = CountryDataFrom()
+
     context = {
         'data': data,
         'form': form,
-
     }
+
     return render(request, 'dashboard/add_data.html', context)
 
 
 
 
-# views.py
-import csv
-import io
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import UploadedFile
-from tablib import Dataset  # Make sure you have installed this library
+
+
 
 
 def upload_file(request):
