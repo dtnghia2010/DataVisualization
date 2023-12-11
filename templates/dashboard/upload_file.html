@@ -5,19 +5,23 @@
 
 {% block content %}
 <h2>Upload File</h2>
+ <h3>Please Upload CSV File</h3>
+
 <form method="post" enctype="multipart/form-data" action="{% url 'upload_file' %}">
     {% csrf_token %}
 
     <!-- Custom file input -->
-    <div class="custom-file">
-        <input type="file" class="custom-file-input" id="customFile" name="file" onchange="updateLabel()">
-        <label class="custom-file-label" for="customFile">Choose file</label>
-    </div>
-    <h3>Please Upload CSV File</h3>
+<!--    <div class="custom-file">-->
+<!--        <input type="file" class="custom-file-input" id="customFile" name="file" onchange="updateLabel()">-->
+<!--        <label class="custom-file-label" for="customFile">Choose file</label>-->
+<!--    </div>-->
+<!--    <h3>Please Upload CSV File</h3>-->
+       Select File <input type ='file' name="myfile">
+         <button type ="submit"> Upload File</button>
+    </form>
 
-
-    <button type="submit" class="btn btn-primary mt-3">Upload</button>
-</form>
+<!--    <button type="submit" class="btn btn-primary mt-3">Upload</button>-->
+<!--</form>-->
 
 <!-- Hiển thị danh sách các file đã tải lên -->
 

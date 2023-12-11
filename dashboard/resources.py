@@ -1,7 +1,7 @@
 from import_export import resources
-from .models import UploadedFile
+from .models import Upload_File
 
 
 class UploadedFileResource(resources.ModelResource):
     class Meta:
-        model = UploadedFile
+        model = Upload_File

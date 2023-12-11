@@ -1,15 +1,15 @@
 from django import forms
-from .models import CountryData, UploadedFile
+from .models import Add_Data, Upload_File
 
 
-class CountryDataFrom(forms.ModelForm):
+class Add_DataFrom(forms.ModelForm):
     class Meta:
-        model = CountryData
+        model = Add_Data
         fields = '__all__'
 
 
 # forms.py
-class UploadFileForm(forms.ModelForm):
+class Upload_FileForm(forms.ModelForm):
     class Meta:
-        model = UploadedFile
-        fields = ['file', 'Country', 'Population']
+        model = Upload_File
+        fields = ['file', 'CountryName', 'Year_2022']
