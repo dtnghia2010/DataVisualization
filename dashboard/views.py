@@ -1,18 +1,19 @@
 import csv
 import io
+import os
 
+import pandas as pd
+from django.contrib.admin.templatetags.admin_list import results
 from django.core.checks import messages
 from django.shortcuts import render, redirect
 from django.template import context
 from tablib import Dataset
-
 from .models import Add_Data, Upload_File
-from .forms import Add_DataFrom
+from .forms import Add_DataFrom, Upload_FileForm
 import csv
 import io
 from django.shortcuts import render, redirect
 from django.contrib import messages
-
 
 
 # Create your views here.
@@ -52,35 +53,72 @@ def add_data(request):
 
 
 
+import os
+from collections import Counter
 
+from django.shortcuts import render, redirect
+from django.core.files.storage import FileSystemStorage
+from django.contrib import messages
+import pandas as pd
 
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
+def upload_file(request, *args, **kwargs):
+    global attribute1, attribute2
+    context = {}
+    listlabels, listdatas = None, None
 
-
-def upload_file(request):
     if request.method == 'POST':
-        new_uploaded_file = request.FILES.get('myfile')  # Use get() instead of indexing
+        uploaded_file = request.FILES['document']
+        attribute1 = request.POST.get('attribute1')
+        attribute2 = request.POST.get('attribute2')
 
-        if not new_uploaded_file.name.endswith('csv'):
-            messages.info(request, 'Please upload a CSV file only')
-            return redirect('upload_file')  # Redirect to the same page
+        if uploaded_file.name.endswith('csv'):
+            savefile = FileSystemStorage()
+            name = savefile.save(uploaded_file.name, uploaded_file)
 
-        data_set = new_uploaded_file.read().decode('UTF-8')
-        io_string = io.StringIO(data_set)
-        next(io_string)
-        # Assuming CSV file has two columns: Country and Population
-        for column in csv.reader(io_string, delimiter=',', quotechar='|'):
-            # Using get_or_create instead of update_or_create
-            created, _ = Upload_File.objects.get_or_create(
-                CountryName=column[0],
-                CountryCode= column[1],
-                Year_2022=column[2],
-            )
+            file_directory = os.path.join(settings.MEDIA_ROOT, name)
+            readfile(file_directory)
 
-        messages.success(request, 'File successfully uploaded')  # Use success instead of info
-        return redirect('upload_file')  # Redirect to the same page after processing the file
+            labels, datas = process_data(attribute1, attribute2)
+            listlabels, listdatas = prepare_chart_data(labels, datas)
 
-    return render(request, 'dashboard/upload_file.html')
+        else:
+            messages.warning(request, 'File was not uploaded, please use a CSV file extension')
+
+    return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
+
+
+def readfile(filename):
+    global data
+    my_file = pd.read_csv(filename, sep='[:;,|_]', engine='python')
+    data = pd.DataFrame(data=my_file, index=None)
+    print(data)
+
+
+def process_data(attribute1, attribute2):
+    labels = []
+    datas = []
+    for x in data[attribute1]:  # name
+        labels.append(x)
+
+    for y in data[attribute2]:  # price
+        datas.append(y)
+
+    return labels, datas
+
+
+def prepare_chart_data(labels, datas):
+    my_labels = dict(Counter(labels))
+    my_datas = dict(Counter(datas))
+
+    listlabels = list(my_labels.keys())
+    listdatas = list(my_datas.keys())
+
+    return listlabels, listdatas
+
+
 
     #     form = UploadFileForm(request.POST, request.FILES)
     #     if form.is_valid():

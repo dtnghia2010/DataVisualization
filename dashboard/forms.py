@@ -12,4 +12,4 @@ class Add_DataFrom(forms.ModelForm):
 class Upload_FileForm(forms.ModelForm):
     class Meta:
         model = Upload_File
-        fields = ['file', 'CountryName', 'Year_2022']
+        fields = ['attribute1', 'attribute2']
