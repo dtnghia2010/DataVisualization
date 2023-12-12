@@ -81,6 +81,13 @@ def upload_file(request, *args, **kwargs):
             file_directory = os.path.join(settings.MEDIA_ROOT, name)
             readfile(file_directory)
 
+            # Lặp qua dữ liệu và tạo hoặc cập nhật bản ghi trong mô hình
+            for index, row in data.iterrows():
+                Upload_File.objects.create(
+                    attribute1=row[attribute1],
+                    attribute2=row[attribute2]
+                )
+
             labels, datas = process_data(attribute1, attribute2)
             listlabels, listdatas = prepare_chart_data(labels, datas)
 
@@ -88,6 +95,31 @@ def upload_file(request, *args, **kwargs):
             messages.warning(request, 'File was not uploaded, please use a CSV file extension')
 
     return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
+
+# def upload_file(request, *args, **kwargs):
+#     global attribute1, attribute2
+#     context = {}
+#     listlabels, listdatas = None, None
+#
+#     if request.method == 'POST':
+#         uploaded_file = request.FILES['document']
+#         attribute1 = request.POST.get('attribute1')
+#         attribute2 = request.POST.get('attribute2')
+#
+#         if uploaded_file.name.endswith('csv'):
+#             savefile = FileSystemStorage()
+#             name = savefile.save(uploaded_file.name, uploaded_file)
+#
+#             file_directory = os.path.join(settings.MEDIA_ROOT, name)
+#             readfile(file_directory)
+#
+#             labels, datas = process_data(attribute1, attribute2)
+#             listlabels, listdatas = prepare_chart_data(labels, datas)
+#
+#         else:
+#             messages.warning(request, 'File was not uploaded, please use a CSV file extension')
+#
+#     return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
 
 
 def readfile(filename):
