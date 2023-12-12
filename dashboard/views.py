@@ -96,6 +96,19 @@ def readfile(filename):
     print(data)
 
 
+# Hàm xử lý dữ liệu từ DataFrame và trả về danh sách nhãn và dữ liệu
+def process_data(attribute1, attribute2):
+    labels = []
+    datas = []
+    for x in data[attribute1]:  # name
+        labels.append(x)
+
+    for y in data[attribute2]:  # price
+        datas.append(y)
+
+    return labels, datas
+
+
 # def upload_file(request, *args, **kwargs):
 #     global attribute1, attribute2
 #     context = {}
@@ -121,17 +134,6 @@ def readfile(filename):
 #
 #     return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
 
-# Hàm xử lý dữ liệu từ DataFrame và trả về danh sách nhãn và dữ liệu
-def process_data(attribute1, attribute2):
-    labels = []
-    datas = []
-    for x in data[attribute1]:  # name
-        labels.append(x)
-
-    for y in data[attribute2]:  # price
-        datas.append(y)
-
-    return labels, datas
 
 
 def prepare_chart_data(labels, datas):
