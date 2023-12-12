@@ -20,7 +20,7 @@ def index(request):
     return render(request, 'dashboard/index.html')
 
 
-# Hàm view cho việc thêm dữ liệu quốc gia và dân số
+# Hàm view cho việc add_data quốc gia và dân số
 def add_data(request):
     data = Add_Data.objects.all()
 
