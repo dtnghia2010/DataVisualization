@@ -55,9 +55,7 @@ def add_data(request):
     return render(request, 'dashboard/add_data.html', context)
 
 
-
-
- # Hàm view cho việc tải lên tệp CSV và lưu trữ dữ liệu vào database
+# Hàm view cho việc tải lên tệp CSV và lưu trữ dữ liệu vào database
 def upload_file(request, *args, **kwargs):
     global attribute1, attribute2
     context = {}
@@ -90,6 +88,14 @@ def upload_file(request, *args, **kwargs):
     return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
 
 
+# Hàm đọc dữ liệu từ tệp CSV và lưu vào biến toàn cục `data`
+def readfile(filename):
+    global data
+    my_file = pd.read_csv(filename, sep='[:;,|_]', engine='python')
+    data = pd.DataFrame(data=my_file, index=None)
+    print(data)
+
+
 # def upload_file(request, *args, **kwargs):
 #     global attribute1, attribute2
 #     context = {}
@@ -114,13 +120,6 @@ def upload_file(request, *args, **kwargs):
 #             messages.warning(request, 'File was not uploaded, please use a CSV file extension')
 #
 #     return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
-
-  # Hàm đọc dữ liệu từ tệp CSV và lưu vào biến toàn cục `data`
-def readfile(filename):
-    global data
-    my_file = pd.read_csv(filename, sep='[:;,|_]', engine='python')
-    data = pd.DataFrame(data=my_file, index=None)
-    print(data)
 
 
 def process_data(attribute1, attribute2):
