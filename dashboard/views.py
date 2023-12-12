@@ -1,7 +1,6 @@
 import csv
 import io
 import os
-
 import pandas as pd
 from django.contrib.admin.templatetags.admin_list import results
 from django.core.checks import messages
@@ -16,12 +15,12 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 
 
-# Create your views here.
-
+# Hàm view cho trang chủ
 def index(request):
     return render(request, 'dashboard/index.html')
 
 
+# Hàm view cho việc thêm dữ liệu quốc gia và dân số
 def add_data(request):
     data = Add_Data.objects.all()
 
@@ -52,7 +51,6 @@ def add_data(request):
     return render(request, 'dashboard/add_data.html', context)
 
 
-
 import os
 from collections import Counter
 
@@ -63,6 +61,7 @@ import pandas as pd
 
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+
 
 def upload_file(request, *args, **kwargs):
     global attribute1, attribute2
@@ -95,6 +94,7 @@ def upload_file(request, *args, **kwargs):
             messages.warning(request, 'File was not uploaded, please use a CSV file extension')
 
     return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
+
 
 # def upload_file(request, *args, **kwargs):
 #     global attribute1, attribute2
@@ -149,8 +149,6 @@ def prepare_chart_data(labels, datas):
     listdatas = list(my_datas.keys())
 
     return listlabels, listdatas
-
-
 
     #     form = UploadFileForm(request.POST, request.FILES)
     #     if form.is_valid():
