@@ -57,7 +57,7 @@ def add_data(request):
 
 
 
-
+ # Hàm view cho việc tải lên tệp CSV và lưu trữ dữ liệu vào database
 def upload_file(request, *args, **kwargs):
     global attribute1, attribute2
     context = {}
