@@ -5,7 +5,7 @@ from .models import Add_Data, Upload_File
 
 
 class Add_DataFrom(forms.ModelForm):
-    # Biểu mẫu cho dữ liệu về quốc gia và dân số
+    # Biểu mẫu cho dữ liệu của add_data
     class Meta:
         model = Add_Data
         fields = '__all__'
