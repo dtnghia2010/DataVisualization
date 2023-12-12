@@ -9,10 +9,14 @@ from django.template import context
 from tablib import Dataset
 from .models import Add_Data, Upload_File
 from .forms import Add_DataFrom, Upload_FileForm
-import csv
-import io
+import os
+from collections import Counter
 from django.shortcuts import render, redirect
+from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
+import pandas as pd
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
 
 # Hàm view cho trang chủ
@@ -51,16 +55,7 @@ def add_data(request):
     return render(request, 'dashboard/add_data.html', context)
 
 
-import os
-from collections import Counter
 
-from django.shortcuts import render, redirect
-from django.core.files.storage import FileSystemStorage
-from django.contrib import messages
-import pandas as pd
-
-from django.conf import settings
-from django.core.files.storage import FileSystemStorage
 
 
 def upload_file(request, *args, **kwargs):
