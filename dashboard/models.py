@@ -4,7 +4,7 @@ from django.db import models
 
 
 class Add_Data(models.Model):
-    # Mô hình cho dữ liệu về quốc gia và dân số
+    # Mô hình cho dữ liệu của add_data
     country = models.CharField(max_length=100)
     population = models.IntegerField()
 
