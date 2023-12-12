@@ -121,7 +121,7 @@ def readfile(filename):
 #
 #     return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
 
-
+# Hàm xử lý dữ liệu từ DataFrame và trả về danh sách nhãn và dữ liệu
 def process_data(attribute1, attribute2):
     labels = []
     datas = []
