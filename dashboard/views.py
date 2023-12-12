@@ -108,6 +108,16 @@ def process_data(attribute1, attribute2):
 
     return labels, datas
 
+def prepare_chart_data(labels, datas):
+    # Tạo một từ điển đếm số lần xuất hiện của mỗi nhãn
+    my_labels = dict(Counter(labels))
+    # Tạo một từ điển đếm số lần xuất hiện của mỗi dữ liệu
+    my_datas = dict(Counter(datas))
+    # Chuyển từ điển nhãn và dữ liệu thành danh sách không trùng lặp
+    listlabels = list(my_labels.keys())
+    listdatas = list(my_datas.keys())
+    return listlabels, listdatas
+
 
 # def upload_file(request, *args, **kwargs):
 #     global attribute1, attribute2
@@ -134,16 +144,6 @@ def process_data(attribute1, attribute2):
 #
 #     return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
 
-
-def prepare_chart_data(labels, datas):
-    # Tạo một từ điển đếm số lần xuất hiện của mỗi nhãn
-    my_labels = dict(Counter(labels))
-    # Tạo một từ điển đếm số lần xuất hiện của mỗi dữ liệu
-    my_datas = dict(Counter(datas))
-    # Chuyển từ điển nhãn và dữ liệu thành danh sách không trùng lặp
-    listlabels = list(my_labels.keys())
-    listdatas = list(my_datas.keys())
-    return listlabels, listdatas
 
     #     form = UploadFileForm(request.POST, request.FILES)
     #     if form.is_valid():
