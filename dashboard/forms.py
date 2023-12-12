@@ -8,7 +8,7 @@ class Add_DataFrom(forms.ModelForm):
         fields = '__all__'
 
 
-# forms.py
+
 class Upload_FileForm(forms.ModelForm):
     class Meta:
         model = Upload_File
