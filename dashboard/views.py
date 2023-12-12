@@ -115,7 +115,7 @@ def upload_file(request, *args, **kwargs):
 #
 #     return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
 
-
+  # Hàm đọc dữ liệu từ tệp CSV và lưu vào biến toàn cục `data`
 def readfile(filename):
     global data
     my_file = pd.read_csv(filename, sep='[:;,|_]', engine='python')
