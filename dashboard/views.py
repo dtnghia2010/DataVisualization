@@ -74,7 +74,6 @@ def upload_file(request, *args, **kwargs):
 
             file_directory = os.path.join(settings.MEDIA_ROOT, name)
             readfile(file_directory)
-
             # Lặp qua dữ liệu và tạo hoặc cập nhật bản ghi trong mô hình
             for index, row in data.iterrows():
                 Upload_File.objects.create(
