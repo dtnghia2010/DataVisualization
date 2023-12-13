@@ -99,7 +99,6 @@ def readfile(filename):
     print(data)
 
 
-
 # Hàm xử lý dữ liệu từ DataFrame và trả về danh sách nhãn và dữ liệu
 def process_data(attribute1, attribute2):
     labels = []
@@ -112,6 +111,7 @@ def process_data(attribute1, attribute2):
 
     return labels, datas
 
+
 def prepare_chart_data(labels, datas):
     # Tạo một từ điển đếm số lần xuất hiện của mỗi nhãn
     my_labels = dict(Counter(labels))
@@ -123,25 +123,50 @@ def prepare_chart_data(labels, datas):
     return listlabels, listdatas
 
 
-
-
 # Trong views.py
-# def upload_sort(request):
-#     # Lấy dữ liệu từ database
-#     data_upload_file = Upload_File.objects.all()
-#
-#     # Thực hiện Quick Sort
-#     sorted_data = quicksort([item.attribute2 for item in data_upload_file])
-#
-#     # Chuẩn bị dữ liệu cho biểu đồ
-#     labels, datas = process_data(attribute1, attribute2, sorted_data)
-#     listlabels, listdatas = prepare_chart_data(labels, datas)
-#
-#     # Render template với dữ liệu đã sắp xếp
-#     return render(request, "dashboard/upload_sort.html", {'listlabels': listlabels, 'listdatas': listdatas})
+# Trong views.py
+def partition(arr, low, high, attribute_index):
+    i = low - 1
+    pivot = arr[high][attribute_index]
 
+    for j in range(low, high):
+        if arr[j][attribute_index] <= pivot:
+            i = i + 1
+            arr[i], arr[j] = arr[j], arr[i]
 
+    arr[i + 1], arr[high] = arr[high], arr[i + 1]
+    return i + 1
 
+def quicksort(arr, low, high, attribute_index):
+    if low < high:
+        pi = partition(arr, low, high, attribute_index)
+        quicksort(arr, low, pi - 1, attribute_index)
+        quicksort(arr, pi + 1, high, attribute_index)
+
+def upload_sort(request):
+    # Lấy dữ liệu từ database
+    data_upload_file = Upload_File.objects.all()
+
+    # Chuyển dữ liệu thành danh sách để sử dụng trong thuật toán quicksort
+    data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
+
+    # Kiểm tra xem data_list có giữ nguyên dữ liệu hay không
+    if data_list:
+        # Thực hiện Quick Sort
+        quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
+
+        # Chuẩn bị dữ liệu cho biểu đồ
+        labels, datas = zip(*data_list)
+
+        # In ra giá trị của labels và datas
+        print("Labels:", labels)
+        print("Datas:", datas)
+    else:
+        # Xử lý trường hợp khi data_list rỗng
+        labels, datas = [], []
+
+    # Render template với dữ liệu đã sắp xếp
+    return render(request, "dashboard/upload_sort.html", {'listlabels': labels, 'listdatas': datas})
 
 
 # def upload_file(request, *args, **kwargs):
@@ -170,28 +195,28 @@ def prepare_chart_data(labels, datas):
 #     return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
 
 
-    #     form = UploadFileForm(request.POST, request.FILES)
-    #     if form.is_valid():
-    #         uploaded_file = form.save(commit=False)
-    #
-    #         # Đọc dữ liệu từ file CSV
-    #         csv_data = read_csv(uploaded_file.file.path)
-    #
-    #         # Lưu trữ dữ liệu vào cơ sở dữ liệu
-    #         for row in csv_data:
-    #             # Tạo một bản ghi mới cho mỗi dòng trong CSV
-    #             new_record = CountryData(attribute1=uploaded_file.attribute1, attribute2=uploaded_file.attribute2, country=row[0], population=row[1])
-    #             new_record.save()
-    #
-    #         uploaded_file.save()
-    #
-    #         return redirect('upload_file')
-    # else:
-    #     form = UploadFileForm()
-    #
-    # uploaded_files = UploadedFile.objects.all()
+#     form = UploadFileForm(request.POST, request.FILES)
+#     if form.is_valid():
+#         uploaded_file = form.save(commit=False)
+#
+#         # Đọc dữ liệu từ file CSV
+#         csv_data = read_csv(uploaded_file.file.path)
+#
+#         # Lưu trữ dữ liệu vào cơ sở dữ liệu
+#         for row in csv_data:
+#             # Tạo một bản ghi mới cho mỗi dòng trong CSV
+#             new_record = CountryData(attribute1=uploaded_file.attribute1, attribute2=uploaded_file.attribute2, country=row[0], population=row[1])
+#             new_record.save()
+#
+#         uploaded_file.save()
+#
+#         return redirect('upload_file')
+# else:
+#     form = UploadFileForm()
+#
+# uploaded_files = UploadedFile.objects.all()
 
-    # return render(request, 'dashboard/upload_file.html')
+# return render(request, 'dashboard/upload_file.html')
 
 # from django.shortcuts import render, redirect
 # from .models import UploadedFile
@@ -214,5 +239,3 @@ def prepare_chart_data(labels, datas):
 #
 #     return render(request, 'dashboard/upload_file.html', {'form': form, 'uploaded_files': uploaded_files})
 #
-
-
