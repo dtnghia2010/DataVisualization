@@ -1,8 +1,4 @@
-import csv
-import io
-import os
-import pandas as pd
-from Tools.demo.sortvisu import quicksort
+
 from django.contrib.admin.templatetags.admin_list import results
 from django.core.checks import messages
 from django.shortcuts import render, redirect
