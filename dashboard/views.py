@@ -2,6 +2,7 @@ import csv
 import io
 import os
 import pandas as pd
+from Tools.demo.sortvisu import quicksort
 from django.contrib.admin.templatetags.admin_list import results
 from django.core.checks import messages
 from django.shortcuts import render, redirect
@@ -61,6 +62,8 @@ def upload_file(request, *args, **kwargs):
     context = {}
     listlabels, listdatas = None, None
 
+    Upload_File.objects.all().delete()
+
     if request.method == 'POST':
         uploaded_file = request.FILES['document']
         attribute1 = request.POST.get('attribute1')
@@ -91,9 +94,10 @@ def upload_file(request, *args, **kwargs):
 # Hàm đọc dữ liệu từ tệp CSV và lưu vào biến toàn cục `data`
 def readfile(filename):
     global data
-    my_file = pd.read_csv(filename, sep='[:;,|_]', engine='python')
+    my_file = pd.read_csv(filename, sep='[:;,|_]', engine='python', header=0)
     data = pd.DataFrame(data=my_file, index=None)
     print(data)
+
 
 
 # Hàm xử lý dữ liệu từ DataFrame và trả về danh sách nhãn và dữ liệu
@@ -117,6 +121,27 @@ def prepare_chart_data(labels, datas):
     listlabels = list(my_labels.keys())
     listdatas = list(my_datas.keys())
     return listlabels, listdatas
+
+
+
+
+# Trong views.py
+# def upload_sort(request):
+#     # Lấy dữ liệu từ database
+#     data_upload_file = Upload_File.objects.all()
+#
+#     # Thực hiện Quick Sort
+#     sorted_data = quicksort([item.attribute2 for item in data_upload_file])
+#
+#     # Chuẩn bị dữ liệu cho biểu đồ
+#     labels, datas = process_data(attribute1, attribute2, sorted_data)
+#     listlabels, listdatas = prepare_chart_data(labels, datas)
+#
+#     # Render template với dữ liệu đã sắp xếp
+#     return render(request, "dashboard/upload_sort.html", {'listlabels': listlabels, 'listdatas': listdatas})
+
+
+
 
 
 # def upload_file(request, *args, **kwargs):
@@ -190,4 +215,4 @@ def prepare_chart_data(labels, datas):
 #     return render(request, 'dashboard/upload_file.html', {'form': form, 'uploaded_files': uploaded_files})
 #
 
-# your_app/views.py
+
