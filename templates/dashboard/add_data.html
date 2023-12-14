@@ -24,7 +24,8 @@
         font-size: 20px;
         font-weight: 600;
         color: black;
-        margin-left: 460px;
+        margin-left: 240px;
+        margin-top: 20px;
     }
 
     .but1:hover{
@@ -39,16 +40,14 @@
         <div class="border p-3 shadow ">
             <h2 class="text-center text">Add Data</h2>
             <hr>
-            <div class="form-group f1">
-                <form method="POST">
-                    {% csrf_token %}
-                    {{ form }}
-                </form>
+                <div class="form-group f1">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form }}
+                        <input class="btn but1 " type="submit" value="Add">
+                    </form>
+                </div>
             </div>
-            <hr>
-            <input class="btn but1" type="submit" value="Add">
-        </div>
-
     </div>
 
     <div class="col-md-8 my-4">
