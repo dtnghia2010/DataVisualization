@@ -1,5 +1,7 @@
 {% extends 'partials/base.html' %}
 
+{% load static %}
+
 {% block title %}Homepage{% endblock %}
 
 {% block content %}
@@ -11,7 +13,8 @@
         border-color: rgba(58.58, 61.92, 142.02, 0.90);
         border-style: solid;
         border-width: 2px;
-        background: none;
+        background: rgba(240, 242, 246, 1);
+        font-weight: 600;
         font-size: 20px;
         color: black;
     }
@@ -22,11 +25,12 @@
     }
 
     .but2{
-        margin-left: 150px;
+        margin-left: 260px;
         border-color: rgba(58.58, 61.92, 142.02, 0.90);
         border-style: solid;
         border-width: 2px;
-        background: none;
+        background: rgba(240, 242, 246, 1);
+        font-weight: 600;
         font-size: 20px;
         color: black;
     }
@@ -42,19 +46,44 @@
         text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     }
 
+    .b1{
+        background-size: cover;
+        height: 300px;
+    }
+
+
 </style>
 
-<div>
-    <div class="col-md-12">
-        <div class="border p-5 shadow">
-            <h1 class="text-center pb-3 t1">Please choose your option</h1>
+<div class="row MT-4 PT-4 b1" style="background-image: url('static/images/bg.jpg')">
+    <div class="col-md-12 shadow">
+        <div class="row-md-2">
+            <h1 class="row-md-1 text-center p-5 t1">Please choose your option</h1>
             <hr>
-            <a href="{% url 'add_data' %}" class="btn  but1 mt-2">Add Data</a>
-            <a href="{% url 'upload_file' %}" class="btn  but2 mt-2">Upload File</a>
+            <div class="row-md-1 ">
+                <div class="col-md-12 p-4">
+                    <a href="{% url 'add_data' %}" class="col-inline-md-1 btn but1">Add Data</a>
+                    <a href="{% url 'upload_file' %}" class="col-inline-md-1 btn  but2">Upload File</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+<div class="media">
+  <img class="align-self-center mr-3 pt-5 pb-5" style="width: 500px" src="{% static 'images/creative.jpg' %}" alt="Generic placeholder image">
+  <div class="media-body">
+    <h5 class="mt-5">Media heading</h5>
+    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+  </div>
+</div>
+
+<div class="media">
+
+    <div class="media-body">
+        <h5 class="mt-5">Media heading</h5>
+        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus. </div>
+  <img class="align-self-left mr-3 pt-5 pb-5" style="width: 500px" src="{% static 'images/webdesign.jpg' %}" alt="Generic placeholder image">
+  </div>
+
 
 {% endblock %}
-
