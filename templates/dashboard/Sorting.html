@@ -1,82 +1,34 @@
-{% extends 'partials/base.html' %}
-
-{% block title %}UPLOAD FILE{% endblock %}
-
-{% block content %}
-
-<style>
-
-    .t1{
-        font-size: 44px;
-        color: rgba(58.58, 61.92, 142.02, 0.90);
-        text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-   }
-
-    .upload{
-        border: none;
-        font-size: 20px;
-        font-weight: 600;
-        color: black;
-        margin-left: 40px;
-        background: rgba(203, 204, 240, 1);
-    }
-
-    .upload:hover{
-        text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
-    }
-
-    ::-webkit-file-upload-button{
-        border-radius: 20px;
-        background: none;
-        font-size: 20px;
-        font-weight: 600;
-        line-height: 24.43px;
-        word-wrap: break-word;
-        padding-bottom: 3px;
-        margin-right: 20px;
-    }
-
-    ::-webkit-file-upload-button:hover{
-        text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
-    }
-
-    .a1{
-        margin-left: 420px;
-        border-color: rgba(58.58, 61.92, 142.02, 0.90);
-        border-style: solid;
-        border-width: 2px;
-        color: black;
-    }
-
-    .a1:hover{
-        text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
-    }
-
-
-</style>
-
-<div class="container">
-    <div class="col-md-12">
-        <div class="border p-5 shadow">
-        <h1 class="text-center mt-2 t1" > Please upload your CSV file </h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Expert Assist</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="container card" style="...">
+    <div class="row justify-content-center container">
+        <h1> Please upload your CSV file </h1>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row content">
-                <div class="col pt-5"> <br>
+                <div class="col"> <br> <br>
                     <input type="file" name="document" id="document" required="required">
                 </div>
-                <div class="col pt-3 mb-3 mt-4">
-                    <p id="id1">Label</p>
+                <div class="col">
+                    <p id="id1">Attribute1</p>
                     <input type="text" name="attribute1" id="attributeid1" required="required">
                 </div>
-                <div class="col pt-3 mb-3 mt-4">
-                    <p id="id2">Data</p>
+                <div class="col">
+                    <p id="id2">Attribute2</p>
                     <input type="text" name="attribute2" id="attributeid2" required="required">
                 </div>
 
                 <div class="col"> <br> <br>
                     <button type="submit" class="btn btn-primary">Upload</button>
                 </div>
+
             </div>
         </form>
         <div class="col">
@@ -91,11 +43,11 @@
         <div
 
         {% if listlabels and listdatas %}
-            <div class="pt-5">
-                <div>
+            <div class="row">
+                <div class="col">
                     <!-- Display your chart here using listlabels and listdatas -->
                     <!-- Example: -->
-                    <canvas id="myChart" width="400" height="400" class="mb-4"></canvas>
+                    <canvas id="myChart" width="7000px" height="1000px"></canvas>
                     <script>
                         var ctx = document.getElementById('myChart').getContext('2d');
                         var myChart = new Chart(ctx, {
@@ -111,11 +63,11 @@
                                 }]
                             },
                             options: {
+                                legend: {display: false},
                                 scales: {
-                                    y: {
-                                        beginAtZero: true
-                                    }
-                                }
+                                            yAxes: [{ticks: {min: 40, max:60}}],
+                                            xAxes: [{ticks: {autoSkip: false}}]
+                                        }
                             }
                         });
                     </script>
@@ -132,6 +84,5 @@
         {% endblock %}
     </div>
 </div>
-
-{% endblock %}
-
+</body>
+</html>
