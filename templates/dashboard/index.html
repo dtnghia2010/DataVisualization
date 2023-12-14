@@ -3,14 +3,58 @@
 {% block title %}Homepage{% endblock %}
 
 {% block content %}
+
+<style>
+
+    .but1{
+        margin-left: 280px;
+        border-color: rgba(58.58, 61.92, 142.02, 0.90);
+        border-style: solid;
+        border-width: 2px;
+        background: none;
+        font-size: 20px;
+        color: black;
+    }
+
+    .but1:hover{
+        background: rgba(58.58, 61.92, 142.02, 0.90);
+        color: white;
+    }
+
+    .but2{
+        margin-left: 150px;
+        border-color: rgba(58.58, 61.92, 142.02, 0.90);
+        border-style: solid;
+        border-width: 2px;
+        background: none;
+        font-size: 20px;
+        color: black;
+    }
+
+    .but2:hover{
+        background: rgba(58.58, 61.92, 142.02, 0.90);
+        color: white;
+    }
+
+    .t1{
+        font-size: 44px;
+        color: rgba(58.58, 61.92, 142.02, 0.90);
+        text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
+</style>
+
 <div>
     <div class="col-md-12">
         <div class="border p-5 shadow">
-            <h1 class="text-center">Homepage</h1>
+            <h1 class="text-center pb-3 t1">Please choose your option</h1>
             <hr>
-            <a href="{% url 'add_data' %}" class="btn btn-primary">Add Data</a>
-            <a href="{% url 'upload_file' %}" class="btn btn-secondary">Upload File</a>
+            <a href="{% url 'add_data' %}" class="btn  but1 mt-2">Add Data</a>
+            <a href="{% url 'upload_file' %}" class="btn  but2 mt-2">Upload File</a>
         </div>
     </div>
 </div>
+
+
 {% endblock %}
+
