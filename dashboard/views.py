@@ -57,6 +57,7 @@ def upload_file(request):
     formSorting = sortingForm()
 
     if request.method == 'POST':
+        Upload_File.objects.all().delete()
         uploaded_file = request.FILES['document']
         attribute1 = request.POST.get('attribute1')
         attribute2 = request.POST.get('attribute2')
@@ -160,7 +161,9 @@ def processing(request):
             data = Upload_File.objects.values('attribute2').values_list('attribute2','attribute1')
 
             data_Dict = dict(data)
+
             print(data_Dict)
+
             data_List = list(data_Dict.keys())
 
             data_sorted = globals()[algorithm](data_List,0,len(data_List) - 1)
