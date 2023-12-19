@@ -1,3 +1,13 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}ADD DATA{% endblock %}
+
+{% block content %}
+<div class="col-md-8 my-4">
+        <div class="bg-white">
+            <div class="card-body">
+                <canvas id="myChart" width="400" height="300"></canvas>
+
 <script>
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
@@ -5,7 +15,7 @@
         data: {
             labels: {{ listlabels|safe }},
             datasets: [{
-                label: 'Attribute2',
+                label: 'Population',
                 data: {{ listdatas|safe }},
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderColor: 'rgba(75, 192, 192, 1)',
@@ -21,3 +31,6 @@
         }
     });
 </script>
+            </div>
+        </div>
+{% endblock %}

@@ -22,6 +22,7 @@ def index(request):
 # Hàm view cho việc add_data quốc gia và dân số
 def add_data(request):
     data = Add_Data.objects.all()
+    formSort = sortingForm()
 
     if request.method == 'POST':
         form = Add_DataFrom(request.POST)
@@ -45,6 +46,7 @@ def add_data(request):
     context = {
         'data': data,
         'form': form,
+        'formSorting': sortingForm
     }
 
     return render(request, 'dashboard/add_data.html', context)
@@ -55,7 +57,7 @@ def upload_file(request):
     global attribute1, attribute2
 
     listlabels, listdatas = None, None
-
+    formSorting = sortingForm()
     Upload_File.objects.all().delete()
 
     if request.method == 'POST':
@@ -83,7 +85,7 @@ def upload_file(request):
         else:
             messages.warning(request, 'File was not uploaded, please use a CSV file extension')
 
-    return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
+    return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas, 'formSorting': formSorting})
 
 
 # Hàm đọc dữ liệu từ tệp CSV và lưu vào biến toàn cục `data`
@@ -152,7 +154,7 @@ def partition(array, low, high):
     # Return the position from where partition is done
     return i + 1
 
-def processing(request):
+def processingUpload(request):
     if request.method == 'POST':
         form = sortingForm(request.POST)
 
@@ -160,29 +162,40 @@ def processing(request):
             algorithm = request.POST['algorithm']
 
             data = Upload_File.objects.values('attribute2').values_list('attribute2','attribute1')
+            listlabels, listdatas = processSort(data, algorithm)
+            return render(request, 'dashboard/upload_file.html', {'listlabels':listlabels, 'listdatas':listdatas})
 
-            data_Dict = dict(data)
 
-            print(data_Dict)
 
-            data_List = list(data_Dict.keys())
+def processingAdd(request):
+    if request.method == 'POST':
+        form = sortingForm(request.POST)
 
-            data_sorted = globals()[algorithm](data_List, 0, len(data_List) - 1)
+        if form.is_valid():
+            algorithm = request.POST['algorithm']
 
-            Sorted_dict = {i: data_Dict[i] for i in data_sorted}
+            data = Add_Data.objects.values('population').values_list('population','country')
+            listlabels, listdatas = processSort(data, algorithm)
+            return render(request, 'dashboard/upload_sort.html', {'listlabels':listlabels, 'listdatas':listdatas})
 
-            attr1 = []
-            attr2 = []
-            for i in Sorted_dict:
-                attr1.append(Sorted_dict[i])
-                attr2.append(i)
+def processSort(data, algorithm):
+    data_Dict = dict(data)
 
-            listlabels, listdatas = prepare_chart_data(attr1, attr2)
+    print(data_Dict)
 
-            return render(request, 'dashboard/Sorting.html', {'listlabels': listlabels, 'listdatas': listdatas})
+    data_List = list(data_Dict.keys())
 
-            # z = globals()[algorithm](data, 0, len(data) - 1)
-        else:
-            return HttpResponse("form is not valid")
-    else:
-        return HttpResponse("It not POST method")
+    data_sorted = globals()[algorithm](data_List, 0, len(data_List) - 1)
+
+    Sorted_dict = {i: data_Dict[i] for i in data_sorted}
+
+    attr1 = []
+    attr2 = []
+    for i in Sorted_dict:
+        attr1.append(Sorted_dict[i])
+        attr2.append(i)
+
+    listlabels, listdatas = prepare_chart_data(attr1, attr2)
+
+    return listlabels, listdatas
+

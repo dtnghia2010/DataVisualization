@@ -47,6 +47,15 @@
                         <input class="btn but1 " type="submit" value="Add">
                     </form>
                 </div>
+            <hr>
+                <div class="col">
+                    <form action="{% url 'sortAdd'  %}" method="POST">
+                        {% csrf_token %}
+                        {{ formSorting }}
+                        <input type="submit" value="Sorting">
+
+                    </form>
+                </div>
             </div>
     </div>
 

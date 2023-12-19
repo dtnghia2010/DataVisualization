@@ -80,7 +80,7 @@
             </div>
         </form>
         <div class="col">
-                <form action="{% url 'sorting' %}" method="POST">
+                <form action="{% url 'sortUp'  %}" method="POST">
                     {% csrf_token %}
                     {{ formSorting }}
                     <input type="submit" value="Sorting">
