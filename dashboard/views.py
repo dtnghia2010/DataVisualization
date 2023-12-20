@@ -53,6 +53,7 @@ def add_data(request):
 
 
 # Hàm view cho việc tải lên tệp CSV và lưu trữ dữ liệu vào database
+
 def upload_file(request, *args, **kwargs):
     global attribute1, attribute2
     context = {}
@@ -95,7 +96,10 @@ def readfile(filename):
     print(data)
 
 
+
+
 # Hàm xử lý dữ liệu từ DataFrame và trả về danh sách nhãn và dữ liệu
+
 def process_data(attribute1, attribute2):
     labels = []
     datas = []
@@ -108,15 +112,16 @@ def process_data(attribute1, attribute2):
     return labels, datas
 
 
+
+
 def prepare_chart_data(labels, datas):
-    # Tạo một từ điển đếm số lần xuất hiện của mỗi nhãn
-    my_labels = dict(Counter(labels))
-    # Tạo một từ điển đếm số lần xuất hiện của mỗi dữ liệu
-    my_datas = dict(Counter(datas))
-    # Chuyển từ điển nhãn và dữ liệu thành danh sách không trùng lặp
-    listlabels = list(my_labels.keys())
-    listdatas = list(my_datas.keys())
+    # Chuyển danh sách về danh sách Python thông thường
+    listlabels = labels
+    listdatas = datas
+
     return listlabels, listdatas
+
+
 
 
 # Trong views.py
