@@ -14,6 +14,7 @@ from django.contrib import messages
 import pandas as pd
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.db.models import Q
 
 
 # Hàm view cho trang chủ
@@ -23,7 +24,12 @@ def index(request):
 
 # Hàm view cho việc add_data quốc gia và dân số
 def add_data(request):
-    data = Add_Data.objects.all()
+    if 'q' in request.GET:
+        q = request.GET['q']
+        multiple_q = Q(Q(country__icontains=q) | Q(population__icontains=q))
+        data = Add_Data.objects.filter(multiple_q)
+    else:
+        data = Add_Data.objects.all()
 
     if request.method == 'POST':
         form = Add_DataFrom(request.POST)
