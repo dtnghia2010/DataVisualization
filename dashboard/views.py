@@ -101,15 +101,30 @@ def readfile(filename):
 
 # Hàm xử lý dữ liệu từ DataFrame và trả về danh sách nhãn và dữ liệu
 def process_data(attribute1, attribute2):
+    print("Tên cột:", data.columns)
+
     labels = []
     datas = []
-    for x in data[attribute1]:  # name
+
+    for x in data[attribute1]:
         labels.append(x)
 
-    for y in data[attribute2]:  # price
+    for y in data[attribute2]:
         datas.append(y)
 
     return labels, datas
+
+
+# def process_data(attribute1, attribute2):
+#     labels = []
+#     datas = []
+#     for x in data[attribute1]:  # name
+#         labels.append(x)
+#
+#     for y in data[attribute2]:  # price
+#         datas.append(y)
+#
+#     return labels, datas
 
 
 def prepare_chart_data(labels, datas):
@@ -168,6 +183,60 @@ def upload_sort(request):
     # Render template với dữ liệu đã sắp xếp
     return render(request, "dashboard/upload_sort.html", {'listlabels': labels, 'listdatas': datas})
 
+
+def binary_search(arr, low, high, target, attribute_index):
+        while low <= high:
+            mid = (low + high) // 2
+            mid_value = arr[mid][attribute_index]
+
+            if mid_value == target:
+                return mid
+            elif mid_value < target:
+                low = mid + 1
+            else:
+                high = mid - 1
+
+        return -1  # Trả về -1 nếu không tìm thấy
+
+
+def search_data(request):
+        # Lấy dữ liệu từ database
+        data_upload_file = Upload_File.objects.all()
+
+        # Chuyển dữ liệu thành danh sách để sử dụng trong thuật toán quicksort
+        data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
+
+        # Kiểm tra xem data_list có giữ nguyên dữ liệu hay không
+        if data_list:
+            # Thực hiện Quick Sort
+            quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
+
+            # Chuẩn bị dữ liệu cho biểu đồ
+            labels, datas = zip(*data_list)
+
+            # In ra giá trị của labels và datas
+            print("Labels:", labels)
+            print("Datas:", datas)
+
+            # Chọn một giá trị để tìm kiếm
+            target_value = 123  # Đặt giá trị cần tìm kiếm
+
+            # Thực hiện tìm kiếm nhị phân
+            result_index = binary_search(data_list, 0, len(data_list) - 1, target_value, attribute_index=0)
+
+            if result_index != -1:
+                result_label = labels[result_index]
+                result_data = datas[result_index]
+                print(f"Found {target_value} at index {result_index}. Label: {result_label}, Data: {result_data}")
+            else:
+                print(f"{target_value} not found in the data.")
+
+        else:
+            # Xử lý trường hợp khi data_list rỗng
+            labels, datas = [], []
+
+        # Render template với dữ liệu đã sắp xếp
+        return render(request, "dashboard/search_data.html", {'listlabels': labels, 'listdatas': datas})
 
 # def upload_file(request, *args, **kwargs):
 #     global attribute1, attribute2
