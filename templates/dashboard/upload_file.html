@@ -7,7 +7,7 @@
 <style>
 
     .t1{
-        font-size: 44px;
+        font-size: 50px;
         color: rgba(58.58, 61.92, 142.02, 0.90);
         text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
    }
@@ -37,27 +37,21 @@
     }
 
     ::-webkit-file-upload-button:hover{
-        text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
+        background: rgba(58.58, 61.92, 142.02, 0.90);
+        color: white;
     }
 
-    .a1{
-        margin-left: 420px;
-        border-color: rgba(58.58, 61.92, 142.02, 0.90);
-        border-style: solid;
-        border-width: 2px;
-        color: black;
-    }
-
-    .a1:hover{
-        text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
+    .b1{
+        background-size: cover;
+        height: 300px;
     }
 
 
 </style>
 
-<div class="container">
+<div class="container b1 shadow" style="background-image: url('static/images/bg.jpg')">
     <div class="col-md-12">
-        <div class="border p-5 shadow">
+        <div class="p-5">
         <h1 class="text-center mt-2 t1" > Please upload your CSV file </h1>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
@@ -77,53 +71,9 @@
                 <div class="col pt-5"> <br>
                     <button type="submit" class="btn upload">Upload</button>
                 </div>
-
-                <div class="nav-item dropdown mt-3">
-                    <a class="nav-link dropdown-toggle a1" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-                      Algorithms
-                    </a>
-                    <div class="dropdown-menu">
-                      <a class="dropdown-item" href="#">Sort</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Search</a>
-                    </div>
-                </div>
-
             </div>
         </form>
         </div>
-        {% if listlabels and listdatas %}
-            <div class="pt-5">
-                <div>
-                    <!-- Display your chart here using listlabels and listdatas -->
-                    <!-- Example: -->
-                    <canvas id="myChart" width="400" height="400" class="mb-4"></canvas>
-                    <script>
-                        var ctx = document.getElementById('myChart').getContext('2d');
-                        var myChart = new Chart(ctx, {
-                            type: 'bar',
-                            data: {
-                                labels: {{ listlabels|safe }},
-                                datasets: [{
-                                    label: 'Attribute2',
-                                    data: {{ listdatas|safe }},
-                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                    borderColor: 'rgba(75, 192, 192, 1)',
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                scales: {
-                                    y: {
-                                        beginAtZero: true
-                                    }
-                                }
-                            }
-                        });
-                    </script>
-                </div>
-            </div>
-        {% endif %}
 
         {% block messages %}
             {% if messages %}

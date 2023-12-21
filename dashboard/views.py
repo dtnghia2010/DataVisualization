@@ -1,4 +1,3 @@
-
 from django.contrib.admin.templatetags.admin_list import results
 from django.core.checks import messages
 from django.shortcuts import render, redirect
@@ -24,12 +23,14 @@ def index(request):
 
 # Hàm view cho việc add_data quốc gia và dân số
 def add_data(request):
-    if 'q' in request.GET:
-        q = request.GET['q']
-        multiple_q = Q(Q(country__icontains=q) | Q(population__icontains=q))
-        data = Add_Data.objects.filter(multiple_q)
-    else:
-        data = Add_Data.objects.all()
+    global data_for_chart, form
+    # if 'q' in request.GET:
+    #     q = request.GET['q']
+    #     multiple_q = Q(Q(country__icontains=q) | Q(population__icontains=q))
+    #     data = Add_Data.objects.filter(multiple_q)
+    # else:
+
+    data = Add_Data.objects.all()
 
     if request.method == 'POST':
         form = Add_DataFrom(request.POST)
@@ -39,14 +40,7 @@ def add_data(request):
 
             # Thực hiện các bước vẽ biểu đồ với dữ liệu mới
             data_for_chart = Add_Data.objects.all()
-
-            # Truyền dữ liệu biểu đồ vào context để sử dụng trong template
-            context = {
-                'data': data_for_chart,
-                'form': form,
-            }
-            # Render template với context đã cập nhật
-            return render(request, 'dashboard/add_data.html', context)
+            return redirect(addData_algorithms)
     else:
         form = Add_DataFrom()
 
@@ -54,8 +48,11 @@ def add_data(request):
         'data': data,
         'form': form,
     }
-
     return render(request, 'dashboard/add_data.html', context)
+
+
+def addData_algorithms(request):
+    return render(request, 'dashboard/addData_algorithms.html', {'data': data_for_chart, 'form': form})
 
 
 # Hàm view cho việc tải lên tệp CSV và lưu trữ dữ liệu vào database
@@ -78,20 +75,22 @@ def upload_file(request, *args, **kwargs):
 
             file_directory = os.path.join(settings.MEDIA_ROOT, name)
             readfile(file_directory)
-            # Lặp qua dữ liệu và tạo hoặc cập nhật bản ghi trong mô hình
-            for index, row in data.iterrows():
-                Upload_File.objects.create(
-                    attribute1=row[attribute1],
-                    attribute2=row[attribute2]
-                )
-
-            labels, datas = process_data(attribute1, attribute2)
-            listlabels, listdatas = prepare_chart_data(labels, datas)
-
+            return redirect(uploadFile_algorithms)
         else:
             messages.warning(request, 'File was not uploaded, please use a CSV file extension')
+    return render(request, "dashboard/upload_file.html")
 
-    return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
+
+def uploadFile_algorithms(request):
+    for index, row in data.iterrows():
+        Upload_File.objects.create(
+            attribute1=row[attribute1],
+            attribute2=row[attribute2]
+        )
+
+    labels, datas = process_data(attribute1, attribute2)
+    listlabels, listdatas = prepare_chart_data(labels, datas)
+    return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels': listlabels, 'listdatas': listdatas})
 
 
 # Hàm đọc dữ liệu từ tệp CSV và lưu vào biến toàn cục `data`
@@ -100,8 +99,6 @@ def readfile(filename):
     my_file = pd.read_csv(filename, sep='[:;,|_]', engine='python', header=0)
     data = pd.DataFrame(data=my_file, index=None)
     print(data)
-
-
 
 
 # Hàm xử lý dữ liệu từ DataFrame và trả về danh sách nhãn và dữ liệu
@@ -118,16 +115,12 @@ def process_data(attribute1, attribute2):
     return labels, datas
 
 
-
-
 def prepare_chart_data(labels, datas):
     # Chuyển danh sách về danh sách Python thông thường
     listlabels = labels
     listdatas = datas
 
     return listlabels, listdatas
-
-
 
 
 # Trong views.py
@@ -144,11 +137,13 @@ def partition(arr, low, high, attribute_index):
     arr[i + 1], arr[high] = arr[high], arr[i + 1]
     return i + 1
 
+
 def quicksort(arr, low, high, attribute_index):
     if low < high:
         pi = partition(arr, low, high, attribute_index)
         quicksort(arr, low, pi - 1, attribute_index)
         quicksort(arr, pi + 1, high, attribute_index)
+
 
 def upload_sort(request):
     # Lấy dữ liệu từ database
@@ -174,7 +169,6 @@ def upload_sort(request):
 
     # Render template với dữ liệu đã sắp xếp
     return render(request, "dashboard/upload_sort.html", {'listlabels': labels, 'listdatas': datas})
-
 
 # def upload_file(request, *args, **kwargs):
 #     global attribute1, attribute2

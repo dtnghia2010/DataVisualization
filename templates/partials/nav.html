@@ -1,52 +1,55 @@
 <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(191, 211, 240, 1)">
-  <div class="container">
+    <div class="container">
 
-    <style>
+        <style>
 
-      .button1{
-        border-color: rgba(58.58, 61.92, 142.02, 0.90);
-        border-style: solid;
-        border-width: 2px;
-        background: none;
-        font-size: 15px;
-        color: black;
-        margin-left: 10px;
-      }
+            .button1{
+              border-color: rgba(58.58, 61.92, 142.02, 0.90);
+              border-style: solid;
+              border-width: 2px;
+              background: none;
+              font-size: 15px;
+              color: black;
+              margin-left: 10px;
+            }
 
-      .button1:hover{
-        background: rgba(58.58, 61.92, 142.02, 0.90);
-        color: white;
-      }
+            .button1:hover{
+              background: rgba(58.58, 61.92, 142.02, 0.90);
+              color: white;
+            }
 
-    </style>
+        </style>
 
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'index' %}" style="font-weight: bold; padding-right: 20px">Home <span class="sr-only">(current)</span></a>
-      </li>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'index' %}" style="font-weight: bold; padding-right: 20px">Home
+                        <span class="sr-only">(current)</span></a>
+                </li>
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-          Dropdown
-        </a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                       aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </li>
+
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" name="q" type="search" placeholder="Type here" aria-label="Search">
+                <button class="btn my-2 my-sm-0 button1" type="submit">Search</button>
+            </form>
         </div>
-      </li>
-
-    </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" name="q" type="search" placeholder="Type here" aria-label="Search">
-      <button class="btn my-2 my-sm-0 button1" type="submit">Search</button>
-    </form>
-  </div>
-  </div>
+    </div>
 </nav>
