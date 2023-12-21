@@ -112,6 +112,16 @@ def process_data(attribute1, attribute2):
     return labels, datas
 
 
+# def process_data(attribute1, attribute2):
+#     labels = []
+#     datas = []
+#
+#     for x, y in zip(data[attribute1], data[attribute2]):
+#         labels.append(x)
+#         datas.append(y)
+#
+#     return labels, datas
+
 
 
 def prepare_chart_data(labels, datas):
@@ -144,6 +154,7 @@ def quicksort(arr, low, high, attribute_index):
         quicksort(arr, low, pi - 1, attribute_index)
         quicksort(arr, pi + 1, high, attribute_index)
 
+
 def upload_sort(request):
     # Lấy dữ liệu từ database
     data_upload_file = Upload_File.objects.all()
@@ -168,6 +179,177 @@ def upload_sort(request):
 
     # Render template với dữ liệu đã sắp xếp
     return render(request, "dashboard/upload_sort.html", {'listlabels': labels, 'listdatas': datas})
+
+
+import pandas as pd
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Upload_File
+from .views import quicksort, partition, prepare_chart_data
+
+
+# def binary_search_range(arr, low, high, target_low, target_high, attribute_index):
+#     # Tìm kiếm nhị phân trong khoảng từ target_low đến target_high
+#     while low <= high:
+#         mid = (low + high) // 2
+#         mid_value = arr[mid][attribute_index]
+#
+#         if target_low <= mid_value <= target_high:
+#             return mid
+#         elif mid_value < target_low:
+#             low = mid + 1
+#         else:
+#             high = mid - 1
+#
+#     return -1  # Trả về -1 nếu không tìm thấy
+
+def binary_search_range(arr, low, high, target_low, target_high, attribute_index):
+    while low <= high:
+        mid = (low + high) // 2
+        mid_value = arr[mid][attribute_index]
+
+        print(f"Checking mid_value={mid_value} at index={mid}")
+
+        if target_low <= mid_value <= target_high:
+            print("Found within the range.")
+            return mid
+        elif mid_value < target_low:
+            print("Moving to the right.")
+            low = mid + 1
+        else:
+            print("Moving to the left.")
+            high = mid - 1
+
+    print("Value not found in the specified range.")
+    return -1
+
+
+
+
+
+# Trong views.py
+
+def search_page_upload(request):
+    if request.method == 'POST':
+        try:
+            value_a = float(request.POST.get('value_a'))
+            value_b = float(request.POST.get('value_b'))
+
+            # Lấy và sắp xếp dữ liệu từ database
+            data_upload_file = Upload_File.objects.all()
+            data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
+            quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
+
+            # In ra giá trị của attribute1 và attribute2 trong khoảng xác định
+            print(f"Giá trị của attribute1 và attribute2 trong khoảng {value_a} đến {value_b}:")
+            for item in data_list:
+                if value_a <= item[0] <= value_b:
+                    print(f"Attribute1: {item[0]}, Attribute2: {item[1]}")
+
+            # Tìm kiếm nhị phân giá trị trong khoảng xác định
+            start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index=0)
+
+            if start_index == -1:
+                return HttpResponse("Không có giá trị nằm trong khoảng xác định.")
+
+            end_index = start_index
+            while end_index < len(data_list) and data_list[end_index][0] <= value_b:
+                end_index += 1
+
+            # Chuẩn bị dữ liệu cho biểu đồ
+            labels, datas = prepare_chart_data(*zip(*data_list[start_index:end_index]))
+
+            # Render template với dữ liệu đã lọc cho biểu đồ
+            return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas})
+
+        except (ValueError, TypeError) as e:
+            # Xử lý khi giá trị không hợp lệ được nhập vào
+            return HttpResponse(f"Lỗi: {e}")
+
+    return render(request, 'dashboard/search_page_upload.html')
+
+
+# Trong views.py
+
+
+
+# Trong views.py
+
+#
+#
+# from django.shortcuts import render
+# from .models import Upload_File
+# from .views import quicksort, partition, prepare_chart_data
+#
+# def upload_sort_and_print(request):
+#     # Lấy dữ liệu từ database
+#     data_upload_file = Upload_File.objects.all()
+#
+#     # Chuyển dữ liệu thành danh sách để sử dụng trong thuật toán quicksort
+#     data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
+#
+#     # Kiểm tra xem data_list có giữ nguyên dữ liệu hay không
+#     if data_list:
+#         # Thực hiện Quick Sort
+#         quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
+#
+#         # In ra giá trị của attribute1 và attribute2
+#         print("Danh sách đã sắp xếp:")
+#         for item in data_list:
+#             print(f"Attribute1: {item[0]}, Attribute2: {item[1]}")
+#
+#         # Chuẩn bị dữ liệu cho biểu đồ (nếu cần)
+#         labels, datas = prepare_chart_data(*zip(*data_list))
+#
+#         # Trả về danh sách đã sắp xếp để sử dụng cho binary search
+#         return data_list
+#     else:
+#         # Xử lý trường hợp khi data_list rỗng
+#         print("Dữ liệu rỗng.")
+#         return []
+# sorted_data_list = upload_sort_and_print(request)
+
+
+
+
+
+
+
+
+
+# Import necessary libraries and modules
+
+# def search_page_upload(request):
+#     if request.method == 'POST':
+#         try:
+#             value_a = float(request.POST.get('value_a'))
+#             value_b = float(request.POST.get('value_b'))
+#
+#             # Retrieve and sort data from the database
+#             data_upload_file = Upload_File.objects.all()
+#             data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
+#             quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
+#
+#             # Binary search for values within the specified range
+#             start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index=0)
+#
+#             if start_index == -1:
+#                 return HttpResponse("No values found in the specified range.")
+#
+#             end_index = start_index
+#             while end_index < len(data_list) and data_list[end_index][0] <= value_b:
+#                 end_index += 1
+#
+#             # Prepare data for chart
+#             labels, datas = prepare_chart_data(*zip(*data_list[start_index:end_index]))
+#
+#             return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas})
+#
+#         except (ValueError, TypeError) as e:
+#             # Handle invalid input values
+#             return HttpResponse(f"Error: {e}")
+#
+#     return render(request, 'dashboard/search_page_upload.html')
 
 
 # def upload_file(request, *args, **kwargs):
