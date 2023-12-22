@@ -3,7 +3,7 @@
 {% block title %}UPLOAD FILE{% endblock %}
 
 {% block content %}
-
+{% load static %}
 <style>
 
     .t1{
@@ -48,6 +48,18 @@
 
 
 </style>
+
+<div class="media">
+    <div class="media-body text-left pt-3" style="font-size: 20px">
+        <h1 class="text-left mt-5" >Upload your file to generate <br> the best products</h1>
+        <p style="position: absolute" class="text-right">
+        <i>You can choose a file with the .csv extension for more accurate data.</i>
+        </p>
+    </div>
+    <img style="width: 400px"
+         src="{% static 'images/team.jpg' %}"
+         alt="Generic placeholder image">
+</div>
 
 <div class="container b1 shadow" style="background-image: url('static/images/bg.jpg')">
     <div class="col-md-12">
