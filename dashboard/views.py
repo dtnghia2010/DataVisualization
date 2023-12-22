@@ -46,7 +46,6 @@ def add_data(request):
     context = {
         'data': data,
         'form': form,
-        'formSorting': sortingForm
     }
 
     return render(request, 'dashboard/add_data.html', context)
@@ -91,7 +90,7 @@ def upload_file(request):
 # Hàm đọc dữ liệu từ tệp CSV và lưu vào biến toàn cục `data`
 def readfile(filename):
     global data
-    my_file = pd.read_csv(filename, sep='[:;,|_]', engine='python')
+    my_file = pd.read_csv(filename, sep='[:;,|_]', engine='python', header=0)
     data = pd.DataFrame(data=my_file, index=None)
     print(data)
 
@@ -108,14 +107,12 @@ def process_data(attribute1, attribute2):
 
     return labels, datas
 
+
 def prepare_chart_data(labels, datas):
-    # Tạo một từ điển đếm số lần xuất hiện của mỗi nhãn
-    my_labels = dict(Counter(labels))
-    # Tạo một từ điển đếm số lần xuất hiện của mỗi dữ liệu
-    my_datas = dict(Counter(datas))
-    # Chuyển từ điển nhãn và dữ liệu thành danh sách không trùng lặp
-    listlabels = list(my_labels.keys())
-    listdatas = list(my_datas.keys())
+    # Chuyển danh sách về danh sách Python thông thường
+    listlabels = labels
+    listdatas = datas
+
     return listlabels, listdatas
 
 def quicksort(array, low, high):
@@ -135,23 +132,20 @@ def partition(array, low, high):
     pivot = array[high]
 
     # pointer for greater element
+
+
+# Trong views.py
+# Trong views.py
+def partition(arr, low, high, attribute_index):
     i = low - 1
+    pivot = arr[high][attribute_index]
 
-    # traverse through all elements
-    # compare each element with pivot
     for j in range(low, high):
-        if array[j] <= pivot:
-            # If element smaller than pivot is found
-            # swap it with the greater element pointed by i
+        if arr[j][attribute_index] <= pivot:
             i = i + 1
+            arr[i], arr[j] = arr[j], arr[i]
 
-            # Swapping element at i with element at j
-            (array[i], array[j]) = (array[j], array[i])
-
-    # Swap the pivot element with the greater element specified by i
-    (array[i + 1], array[high]) = (array[high], array[i + 1])
-
-    # Return the position from where partition is done
+    arr[i + 1], arr[high] = arr[high], arr[i + 1]
     return i + 1
 
 def processingUpload(request):
