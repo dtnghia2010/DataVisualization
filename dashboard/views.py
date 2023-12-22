@@ -127,15 +127,8 @@ def quicksort(array, low, high):
     return array
 
 
-def partition(array, low, high):
-    # choose the rightmost element as pivot
-    pivot = array[high]
-
-    # pointer for greater element
 
 
-# Trong views.py
-# Trong views.py
 def partition(arr, low, high, attribute_index):
     i = low - 1
     pivot = arr[high][attribute_index]
