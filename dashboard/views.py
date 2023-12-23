@@ -167,37 +167,37 @@ def partition(array, low, high):
     return i + 1
 
 def processingUpload(request):
-    if request.method == 'POST':
-        form = sortingForm(request.POST)
-
-        if form.is_valid():
-            algorithm = request.POST['algorithm']
+    # if request.method == 'POST':
+    #     form = sortingForm(request.POST)
+    #
+    #     if form.is_valid():
+    #         algorithm = request.POST['algorithm']
 
             data = Upload_File.objects.values('attribute2').values_list('attribute2','attribute1')
-            listlabels, listdatas = processSort(data, algorithm)
-            return render(request, 'dashboard/upload_file.html', {'listlabels':listlabels, 'listdatas':listdatas})
+            listlabels, listdatas = processSort(data)
+            return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels':listlabels, 'listdatas':listdatas})
 
 
 
 def processingAdd(request):
-    if request.method == 'POST':
-        form = sortingForm(request.POST)
+    # if request.method == 'POST':
+    #     form = sortingForm(request.POST)
 
-        if form.is_valid():
-            algorithm = request.POST['algorithm']
+        # if form.is_valid():
+        #     algorithm = request.POST['algorithm']
 
             data = Add_Data.objects.values('population').values_list('population','country')
-            listlabels, listdatas = processSort(data, algorithm)
-            return render(request, 'dashboard/upload_sort.html', {'listlabels':listlabels, 'listdatas':listdatas})
+            listlabels, listdatas = processSort(data)
+            return render(request, 'dashboard/addData_algorithms.html', {'listlabels':listlabels, 'listdatas':listdatas})
 
-def processSort(data, algorithm):
+def processSort(data):
     data_Dict = dict(data)
 
     print(data_Dict)
 
     data_List = list(data_Dict.keys())
 
-    data_sorted = globals()[algorithm](data_List, 0, len(data_List) - 1)
+    data_sorted = quicksort(data_List, 0, len(data_List) - 1)
 
     Sorted_dict = {i: data_Dict[i] for i in data_sorted}
 
