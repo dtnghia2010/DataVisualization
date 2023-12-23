@@ -122,12 +122,12 @@ def predict_data(request, *args, **kwargs):
             train_predictions = scaler_y.inverse_transform(train_predictions_scaled)
 
             # Plotting
-            # plt.scatter(X, y, color='black', label='Actual data')
-            # plt.plot(X, train_predictions, color='blue', linewidth=3, label='Regression line')
-            # plt.xlabel('X-axis label')
-            # plt.ylabel('Y-axis label')
-            # plt.legend()
-            # plt.show()
+            plt.scatter(X, y, color='black', label='Actual data')
+            plt.plot(X, train_predictions, color='blue', linewidth=3, label='Regression line')
+            plt.xlabel('X-axis label')
+            plt.ylabel('Y-axis label')
+            plt.legend()
+            plt.show()
 
             # Scale the new input feature
             scaled_new_year = scaler_X.transform([[predictYear]])
