@@ -1,0 +1,84 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}ALGORITHMS OF ADD DATA{% endblock %}
+
+{% block content %}
+
+<style>
+    .a1{
+        margin-left: 475px;
+        margin-right: 475px;
+        margin-bottom: 50px;
+        border-color: rgba(58.58, 61.92, 142.02, 0.90);
+        border-style: solid;
+        border-width: 2px;
+        color: black;
+    }
+
+    .a1:hover{
+        text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
+    }
+</style>
+
+<div class="nav-item dropdown pb-5">
+    <a class="nav-link dropdown-toggle text-center a1" href="#" role="button" data-toggle="dropdown"
+       aria-expanded="false">
+        Algorithms
+    </a>
+    <div class="dropdown-menu">
+        <a class="dropdown-item text-center" href="sorting/Add">Sort</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item text-center" href="#">Search</a>
+    </div>
+</div>
+
+<div class=" row justify-content-center container">
+    <div class="col-md-12">
+        <div class="bg-white">
+            <div class="card-body">
+                <canvas id="myChart" width="500" height="500"></canvas>
+                <script>
+                    var ctx = document.getElementById('myChart').getContext('2d');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: [{% for data in data %} '{{ data.country }}', {% endfor %}],
+                            datasets: [{
+                                label: '# of Populations',
+                                data: [{% for data in data %} {{ data.population }}, {% endfor %}],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

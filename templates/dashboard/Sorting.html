@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Expert Assist</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="container card" style="...">
+    <div class="row justify-content-center container">
+        <h1> Please upload your CSV file </h1>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row content">
+                <div class="col"> <br> <br>
+                    <input type="file" name="document" id="document" required="required">
+                </div>
+                <div class="col">
+                    <p id="id1">Attribute1</p>
+                    <input type="text" name="attribute1" id="attributeid1" required="required">
+                </div>
+                <div class="col">
+                    <p id="id2">Attribute2</p>
+                    <input type="text" name="attribute2" id="attributeid2" required="required">
+                </div>
+
+                <div class="col"> <br> <br>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+
+            </div>
+        </form>
+        <div class="col">
+                <form action="{% url 'sorting' %}" method="POST">
+                    {% csrf_token %}
+                    {{ formSorting }}
+                    <input type="submit" value="Sorting">
+
+                </form>
+        </div>
+
+        <div
+
+        {% if listlabels and listdatas %}
+            <div class="row">
+                <div class="col">
+                    <!-- Display your chart here using listlabels and listdatas -->
+                    <!-- Example: -->
+                    <canvas id="myChart" width="7000px" height="1000px"></canvas>
+                    <script>
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: {{ listlabels|safe }},
+                                datasets: [{
+                                    label: 'Attribute2',
+                                    data: {{ listdatas|safe }},
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                legend: {display: false},
+                                scales: {
+                                            yAxes: [{ticks: {min: 40, max:60}}],
+                                            xAxes: [{ticks: {autoSkip: false}}]
+                                        }
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        {% endif %}
+
+        {% block messages %}
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+        {% endblock %}
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}ALGORITHMS OF UPLOAD FILE{% endblock %}
+
+{% block content %}
+<style>
+    .a1{
+        margin-left: 475px;
+        margin-right: 475px;
+        border-color: rgba(58.58, 61.92, 142.02, 0.90);
+        border-style: solid;
+        border-width: 2px;
+        color: black;
+    }
+
+    .a1:hover{
+        text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
+    }
+</style>
+
+
+<div class="nav-item dropdown pb-5">
+    <a class="nav-link dropdown-toggle text-center a1" href="#" role="button" data-toggle="dropdown"
+       aria-expanded="false">
+        Algorithms
+    </a>
+    <div class="dropdown-menu">
+        <a class="dropdown-item text-center" href="sorting/Upload">Sort</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item text-center" href="#">Search</a>
+    </div>
+</div>
+
+
+<div class="pt-5">
+    <div>
+        <!-- Display your chart here using listlabels and listdatas -->
+        <!-- Example: -->
+        <canvas id="myChart" width="400" height="400" class="mb-4 pt-3"></canvas>
+        <script>
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ listlabels|safe }},
+                    datasets: [{
+                        label: 'Attribute2',
+                        data: {{ listdatas|safe }},
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
+    </div>
+</div>
+
+{% block messages %}
+{% if messages %}
+{% for message in messages %}
+{{ message }}
+{% endfor %}
+{% endif %}
+{% endblock %}
+
+{% endblock %}
