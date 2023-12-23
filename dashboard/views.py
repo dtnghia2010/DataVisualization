@@ -1,4 +1,5 @@
-from django.http import HttpResponse
+
+from django.contrib.admin.templatetags.admin_list import results
 from django.core.checks import messages
 
 from .models import Add_Data, Upload_File
@@ -11,6 +12,7 @@ from django.contrib import messages
 import pandas as pd
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.db.models import Q
 
 
 
@@ -21,6 +23,13 @@ def index(request):
 
 # Hàm view cho việc add_data quốc gia và dân số
 def add_data(request):
+    global data_for_chart, form
+    # if 'q' in request.GET:
+    #     q = request.GET['q']
+    #     multiple_q = Q(Q(country__icontains=q) | Q(population__icontains=q))
+    #     data = Add_Data.objects.filter(multiple_q)
+    # else:
+
     data = Add_Data.objects.all()
     formSort = sortingForm()
 
@@ -32,14 +41,7 @@ def add_data(request):
 
             # Thực hiện các bước vẽ biểu đồ với dữ liệu mới
             data_for_chart = Add_Data.objects.all()
-
-            # Truyền dữ liệu biểu đồ vào context để sử dụng trong template
-            context = {
-                'data': data_for_chart,
-                'form': form,
-            }
-            # Render template với context đã cập nhật
-            return render(request, 'dashboard/add_data.html', context)
+            return redirect(addData_algorithms)
     else:
         form = Add_DataFrom()
 
@@ -50,6 +52,10 @@ def add_data(request):
     }
 
     return render(request, 'dashboard/add_data.html', context)
+
+
+def addData_algorithms(request):
+    return render(request, 'dashboard/addData_algorithms.html', {'data': data_for_chart, 'form': form})
 
 
 # Hàm view cho việc tải lên tệp CSV và lưu trữ dữ liệu vào database
@@ -72,20 +78,22 @@ def upload_file(request):
 
             file_directory = os.path.join(settings.MEDIA_ROOT, name)
             readfile(file_directory)
-            # Lặp qua dữ liệu và tạo hoặc cập nhật bản ghi trong mô hình
-            for index, row in data.iterrows():
-                Upload_File.objects.create(
-                    attribute1=row[attribute1],
-                    attribute2=row[attribute2]
-                )
-
-            labels, datas = process_data(attribute1, attribute2)
-            listlabels, listdatas = prepare_chart_data(labels, datas)
-
+            return redirect(uploadFile_algorithms)
         else:
             messages.warning(request, 'File was not uploaded, please use a CSV file extension')
+    return render(request, "dashboard/upload_file.html")
 
-    return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas, 'formSorting': formSorting})
+
+def uploadFile_algorithms(request):
+    for index, row in data.iterrows():
+        Upload_File.objects.create(
+            attribute1=row[attribute1],
+            attribute2=row[attribute2]
+        )
+
+    labels, datas = process_data(attribute1, attribute2)
+    listlabels, listdatas = prepare_chart_data(labels, datas)
+    return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels': listlabels, 'listdatas': listdatas})
 
 
 # Hàm đọc dữ liệu từ tệp CSV và lưu vào biến toàn cục `data`
@@ -96,7 +104,10 @@ def readfile(filename):
     print(data)
 
 
+
+
 # Hàm xử lý dữ liệu từ DataFrame và trả về danh sách nhãn và dữ liệu
+
 def process_data(attribute1, attribute2):
     labels = []
     datas = []
@@ -107,6 +118,8 @@ def process_data(attribute1, attribute2):
         datas.append(y)
 
     return labels, datas
+
+
 
 
 def prepare_chart_data(labels, datas):
@@ -136,9 +149,8 @@ def partition(array, low, high):
 
     # pointer for greater element
     i = low - 1
+    pivot = array[high]
 
-    # traverse through all elements
-    # compare each element with pivot
     for j in range(low, high):
         if array[j] <= pivot:
             # If element smaller than pivot is found
