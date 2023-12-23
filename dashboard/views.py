@@ -188,7 +188,7 @@ def processingAdd(request):
 
             data = Add_Data.objects.values('population').values_list('population','country')
             listlabels, listdatas = processSort(data)
-            return render(request, 'dashboard/addData_algorithms.html', {'listlabels':listlabels, 'listdatas':listdatas})
+            return render(request, 'dashboard/upload_sort.html', {'listlabels':listlabels, 'listdatas':listdatas})
 
 def processSort(data):
     data_Dict = dict(data)

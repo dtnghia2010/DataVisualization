@@ -1,12 +1,41 @@
 {% extends 'partials/base.html' %}
 
-{% block title %}ADD DATA{% endblock %}
+{% block title %}ALGORITHMS OF ADD DATA{% endblock %}
 
 {% block content %}
-<div class="col-md-8 my-4">
+
+<style>
+    .a1{
+        margin-left: 475px;
+        margin-right: 475px;
+        margin-bottom: 50px;
+        border-color: rgba(58.58, 61.92, 142.02, 0.90);
+        border-style: solid;
+        border-width: 2px;
+        color: black;
+    }
+
+    .a1:hover{
+        text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
+    }
+</style>
+
+<div class="nav-item dropdown pb-5">
+    <a class="nav-link dropdown-toggle text-center a1" href="#" role="button" data-toggle="dropdown"
+       aria-expanded="false">
+        Algorithms
+    </a>
+    <div class="dropdown-menu">
+        <a class="dropdown-item text-center" href="sorting/Add">Sort</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item text-center" href="#">Search</a>
+    </div>
+</div>
+<div class=" row justify-content-center container">
+    <div class="col-md-12">
         <div class="bg-white">
             <div class="card-body">
-                <canvas id="myChart" width="400" height="300"></canvas>
+                <canvas id="myChart" width="500" height="500"></canvas>
 
 <script>
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -33,4 +62,7 @@
 </script>
             </div>
         </div>
+    </div>
+</div>
+
 {% endblock %}
