@@ -69,8 +69,8 @@ def upload_file(request, *args, **kwargs):
         if uploaded_file.name.endswith('csv'):
             savefile = FileSystemStorage()
             name = savefile.save(uploaded_file.name, uploaded_file)
-
-            file_directory = os.path.join(settings.MEDIA_ROOT, name)
+            upload_folder = 'C:/Users/DELL/PycharmProjects/DataVisulization/uploads'
+            file_directory = os.path.join(settings.MEDIA_ROOT, upload_folder, name)
             readfile(file_directory)
             # Lặp qua dữ liệu và tạo hoặc cập nhật bản ghi trong mô hình
             for index, row in data.iterrows():
