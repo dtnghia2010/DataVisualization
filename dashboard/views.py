@@ -14,7 +14,9 @@ from django.contrib import messages
 import pandas as pd
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from matplotlib import pyplot as plt
 
 # Hàm view cho trang chủ
 def index(request):
@@ -56,6 +58,7 @@ def add_data(request):
 
 def upload_file(request, *args, **kwargs):
     global attribute1, attribute2
+
     context = {}
     listlabels, listdatas = None, None
 
@@ -69,8 +72,7 @@ def upload_file(request, *args, **kwargs):
         if uploaded_file.name.endswith('csv'):
             savefile = FileSystemStorage()
             name = savefile.save(uploaded_file.name, uploaded_file)
-            upload_folder = 'C:/Users/DELL/PycharmProjects/DataVisulization/uploads'
-            file_directory = os.path.join(settings.MEDIA_ROOT, upload_folder, name)
+            file_directory = os.path.join(settings.MEDIA_ROOT, name)
             readfile(file_directory)
             # Lặp qua dữ liệu và tạo hoặc cập nhật bản ghi trong mô hình
             for index, row in data.iterrows():
@@ -81,12 +83,64 @@ def upload_file(request, *args, **kwargs):
 
             labels, datas = process_data(attribute1, attribute2)
             listlabels, listdatas = prepare_chart_data(labels, datas)
-
+            os.remove(file_directory)
         else:
             messages.warning(request, 'File was not uploaded, please use a CSV file extension')
 
     return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
 
+
+def predict_data(request, *args, **kwargs):
+    context = {}
+    if request.method == 'POST':
+        uploaded_file = request.FILES['document']
+        CountryName = request.POST.get('attribute1')
+        predictYear = request.POST.get('attribute2')
+        if uploaded_file.name.endswith('csv'):
+            savefile = FileSystemStorage()
+            name = savefile.save(uploaded_file.name, uploaded_file)
+            file_directory = os.path.join(settings.MEDIA_ROOT, name)
+
+            readPredict(file_directory)
+            extract_data(CountryName)
+
+            #scaling data
+            scaler_X = StandardScaler()
+            scaler_y = StandardScaler()
+
+            X_scaled = scaler_X.fit_transform(X)
+            y_scaled = scaler_y.fit_transform(y)
+
+            #setup and train model
+            lin_model = LinearRegressionCustom(iterations=1000, learning_rate=0.01)
+            lin_model.fit(X_scaled, y_scaled)
+
+            # get scaling Predictions
+            train_predictions_scaled = lin_model.predict(X_scaled)
+
+            #back to original scale
+            train_predictions = scaler_y.inverse_transform(train_predictions_scaled)
+
+            # Plotting
+            # plt.scatter(X, y, color='black', label='Actual data')
+            # plt.plot(X, train_predictions, color='blue', linewidth=3, label='Regression line')
+            # plt.xlabel('X-axis label')
+            # plt.ylabel('Y-axis label')
+            # plt.legend()
+            # plt.show()
+
+            # Scale the new input feature
+            scaled_new_year = scaler_X.transform([[predictYear]])
+
+            # Predict the scaled output
+            scaled_prediction = lin_model.predict(scaled_new_year)
+
+            # Inverse transform to get the prediction in the original scale
+            predicted_population = scaler_y.inverse_transform(scaled_prediction)
+
+            print(f"Predicted population for the year {predictYear}: {predicted_population[0, 0]}")
+
+    return render(request, "dashboard/predict_data.html", {})
 
 # Hàm đọc dữ liệu từ tệp CSV và lưu vào biến toàn cục `data`
 def readfile(filename):
@@ -95,8 +149,23 @@ def readfile(filename):
     data = pd.DataFrame(data=my_file, index=None)
     print(data)
 
+def readPredict(filename):
+    global df
+    df = pd.read_csv(filename)
 
-
+def extract_data(CountryName):
+    global train_data, X, y
+    populations = df.loc[df['Country Name'] == CountryName, '2014':'2022'].values.flatten()
+    years = df.loc[df['Country Name'] == CountryName, '2014':'2022'].columns.tolist()
+    train_data = {
+        "Population": populations,
+        "Year": years
+    }
+    train_data = pd.DataFrame(train_data)
+    print(train_data)
+    train_data['Year'] = pd.to_numeric(train_data['Year'], errors='coerce')
+    X = train_data['Year'].values.reshape(-1, 1)
+    y = train_data['Population'].values.reshape(-1, 1)
 
 # Hàm xử lý dữ liệu từ DataFrame và trả về danh sách nhãn và dữ liệu
 
@@ -168,6 +237,47 @@ def upload_sort(request):
 
     # Render template với dữ liệu đã sắp xếp
     return render(request, "dashboard/upload_sort.html", {'listlabels': labels, 'listdatas': datas})
+
+class LinearRegressionCustom():
+    def __init__(self, learning_rate, iterations):
+        self.learning_rate = learning_rate
+        self.iterations = iterations
+
+    # Function for model training
+    def fit(self, X, Y):
+        # no_of_training_examples, no_of_features
+        self.m, self.n = X.shape
+
+        # weight initialization
+        self.W = np.zeros(self.n)
+        self.b = 0
+        self.X = X
+        self.Y = Y
+        # print(X.shape)
+        # print(Y.shape)
+        # gradient descent learning
+        for i in range(self.iterations):
+            self.update_weights()
+
+        return self
+
+    # Helper function to update weights in gradient descent
+    def update_weights(self):
+        Y_pred = self.predict(self.X)
+
+        # calculate gradients
+        dW = - (2 * (self.X.T).dot(self.Y - Y_pred)) / self.m
+        db = - 2 * np.sum(self.Y - Y_pred) / self.m
+        # print(dW.shape)
+        # update weights
+        self.W = self.W - self.learning_rate * dW
+        self.b = self.b - self.learning_rate * db
+
+        return self
+
+    # Hypothetical function h(x)
+    def predict(self, X):
+        return X.dot(self.W) + self.b
 
 
 # def upload_file(request, *args, **kwargs):

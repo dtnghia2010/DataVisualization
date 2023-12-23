@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Linear Regression</title>
+</head>
+<body>
+
+<div class="container">
+    <div class="col-md-12">
+        <div class="border p-5 shadow">
+        <h1 class="text-center mt-2 t1" > Please upload your CSV file </h1>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row content">
+                <div class="col pt-5"> <br>
+                    <input type="file" name="document" id="document" required="required">
+                </div>
+                <div class="col pt-3 mb-3 mt-4">
+                    <p id="id1">Label</p>
+                    <input type="text" name="attribute1" id="attributeid" required="required">
+                </div>
+                <div class="col pt-3 mb-3 mt-4">
+                    <p id="id2">Data</p>
+                    <input type="text" name="attribute2" id="attributeid2" required="required">
+                </div>
+                <div class="col pt-5"> <br>
+                    <button type="submit" class="btn upload">Upload</button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
