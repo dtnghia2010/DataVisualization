@@ -291,43 +291,48 @@ from .util import binary_search_range, quicksort
 def search_page_upload(request):
     if request.method == 'POST':
         try:
+            # Lấy giá trị của 'value_a' và 'value_b' từ form
             value_a = int(request.POST.get('value_a'))
             value_b = int(request.POST.get('value_b'))
 
-            # Retrieve and sort data from the database
+            # Truy vấn và sắp xếp dữ liệu từ cơ sở dữ liệu
             data_list = list(Upload_File.objects.values('attribute1', 'attribute2').order_by('attribute2'))
 
+            # Sử dụng quicksort để sắp xếp data_list dựa trên 'attribute2'
             quicksort(data_list, 0, len(data_list) - 1, attribute_index='attribute2')
 
-            # Binary search for values within the specified range
+            # Tìm kiếm nhị phân giá trị trong khoảng xác định
             start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index='attribute2')
 
             if start_index == -1:
-                return HttpResponse("No values found in the specified range.")
+                return HttpResponse("Không tìm thấy giá trị trong khoảng xác định.")
 
             end_index = start_index
             selected_data = []
+
+            # Thu thập dữ liệu trong khoảng xác định vào danh sách selected_data
             while end_index < len(data_list) and data_list[end_index]['attribute2'] <= value_b:
-                # Add each item to the selected_data list
                 selected_data.append(data_list[end_index])
                 end_index += 1
 
-            # Prepare data for chart
+            # Chuẩn bị dữ liệu cho biểu đồ
             labels = [item['attribute1'] for item in selected_data]
             datas = [item['attribute2'] for item in selected_data]
 
-            # Print attribute1 and attribute2 for each item in selected_data to the terminal
+            # In attribute1 và attribute2 cho từng item trong selected_data ra terminal
             for item in selected_data:
                 print(f"Attribute1: {item['attribute1']}, Attribute2: {item['attribute2']}")
 
-            # Render the HTML response with the selected_data
+            # Render HTML response với dữ liệu đã chọn
             return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data})
 
         except (ValueError, TypeError) as e:
-            # Handle invalid input values
-            return HttpResponse(f"Error: {e}")
+            # Xử lý giá trị nhập không hợp lệ
+            return HttpResponse(f"Lỗi: {e}")
 
+    # Render form khi request là GET
     return render(request, 'dashboard/search_page_upload.html')
+
 
 
 
