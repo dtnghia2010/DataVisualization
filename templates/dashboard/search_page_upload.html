@@ -19,8 +19,15 @@
     {% if listlabels and listdatas %}
         <h2>Search Results:</h2>
         <ul>
-            {% for i in listlabels|length %}
-                <li>Attribute 2: {{ listlabels.i }}, Attribute 1: {{ listdatas.i }}</li>
+            {% for label in listlabels %}
+                <li>Attribute 1: {{ label }}</li>
+            {% endfor %}
+        </ul>
+
+        <h2>Attribute 2:</h2>
+        <ul>
+            {% for data in listdatas %}
+                <li>{{ data }}</li>
             {% endfor %}
         </ul>
 
@@ -31,10 +38,10 @@
             var myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: {{ listlabels|safe|json_script:"labels" }},
+                    labels: {{ listlabels|safe }},
                     datasets: [{
                         label: 'Attribute 2',
-                        data: {{ listdatas|safe|json_script:"datas" }},
+                        data: {{ listdatas|safe }},
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1

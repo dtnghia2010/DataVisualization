@@ -14,6 +14,7 @@ from django.contrib import messages
 import pandas as pd
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.db.models.functions import Cast
 
 
 # Hàm view cho trang chủ
@@ -136,23 +137,7 @@ def prepare_chart_data(labels, datas):
 
 # Trong views.py
 # Trong views.py
-def partition(arr, low, high, attribute_index):
-    i = low - 1
-    pivot = arr[high][attribute_index]
 
-    for j in range(low, high):
-        if arr[j][attribute_index] <= pivot:
-            i = i + 1
-            arr[i], arr[j] = arr[j], arr[i]
-
-    arr[i + 1], arr[high] = arr[high], arr[i + 1]
-    return i + 1
-
-def quicksort(arr, low, high, attribute_index):
-    if low < high:
-        pi = partition(arr, low, high, attribute_index)
-        quicksort(arr, low, pi - 1, attribute_index)
-        quicksort(arr, pi + 1, high, attribute_index)
 
 
 def upload_sort(request):
@@ -185,7 +170,8 @@ import pandas as pd
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Upload_File
-from .views import quicksort, partition, prepare_chart_data
+from .views import  prepare_chart_data
+from . util import quicksort, partition
 
 
 # def binary_search_range(arr, low, high, target_low, target_high, attribute_index):
@@ -203,70 +189,149 @@ from .views import quicksort, partition, prepare_chart_data
 #
 #     return -1  # Trả về -1 nếu không tìm thấy
 
-def binary_search_range(arr, low, high, target_low, target_high, attribute_index):
-    while low <= high:
-        mid = (low + high) // 2
-        mid_value = arr[mid][attribute_index]
-
-        print(f"Checking mid_value={mid_value} at index={mid}")
-
-        if target_low <= mid_value <= target_high:
-            print("Found within the range.")
-            return mid
-        elif mid_value < target_low:
-            print("Moving to the right.")
-            low = mid + 1
-        else:
-            print("Moving to the left.")
-            high = mid - 1
-
-    print("Value not found in the specified range.")
-    return -1
-
+# def binary_search_range(arr, low, high, target_low, target_high, attribute_index):
+#     while low <= high:
+#         mid = (low + high) // 2
+#         mid_value = arr[mid][attribute_index]
+#
+#         print(f"Checking mid_value={mid_value} at index={mid}")
+#
+#         if target_low <= mid_value <= target_high:
+#             print("Found within the range.")
+#             return mid
+#         elif mid_value < target_low:
+#             print("Moving to the right.")
+#             low = mid + 1
+#         else:
+#             print("Moving to the left.")
+#             high = mid - 1
+#
+#     print("Value not found in the specified range.")
+#     return -1
+#
 
 
 
 
 # Trong views.py
 
+# def search_page_upload(request):
+#     if request.method == 'POST':
+#
+#
+#             try:
+#                 value_a = float(request.POST.get('value_a'))
+#                 value_b = float(request.POST.get('value_b'))
+#
+#                 # Lấy và sắp xếp dữ liệu từ database
+#                 data_upload_file = Upload_File.objects.all()
+#                 data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
+#                 quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
+#
+#                 # In ra giá trị của attribute1 và attribute2 trong khoảng xác định
+#                 print(f"Giá trị của attribute1 và attribute2 trong khoảng {value_a} đến {value_b}:")
+#                 for item in data_list:
+#                     if value_a <= item[0] <= value_b:
+#                         print(f"Attribute1: {item[0]}, Attribute2: {item[1]}")
+#
+#                 # Tìm kiếm nhị phân giá trị trong khoảng xác định
+#                 start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index=0)
+#
+#                 if start_index == -1:
+#                     return HttpResponse("Không có giá trị nằm trong khoảng xác định.")
+#
+#                 end_index = start_index
+#                 while end_index < len(data_list) and data_list[end_index][0] <= value_b:
+#                     end_index += 1
+#
+#                 # Chuẩn bị dữ liệu cho biểu đồ
+#                 print(data_list[start_index:end_index])
+#                 labels, datas = zip(*data_list[start_index:end_index])
+#
+#
+#                 print("Labels:", labels)
+#                 print("Datas:", datas)
+#
+#                 # Render template với dữ liệu đã lọc cho biểu đồ
+#                 return render(request, "dashboard/search_page_upload.html", {'listlabels': datas, 'listdatas':labels })
+#
+#             except (ValueError, TypeError) as e:
+#                 # Xử lý khi giá trị không hợp lệ được nhập vào
+#                 return HttpResponse(f"Lỗi: {e}")
+#
+#
+#     return render(request, 'dashboard/search_page_upload.html')
+
+
+
+# Trong views.py
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Upload_File
+from .util import binary_search_range, quicksort
+from django.db.models import F, FloatField
+
+# Trong views.py
+# views.py
+
+# views.py
+
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Upload_File
+from .util import binary_search_range, quicksort
+
+# views.py
+
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Upload_File
+from .util import binary_search_range, quicksort
+
 def search_page_upload(request):
     if request.method == 'POST':
         try:
-            value_a = float(request.POST.get('value_a'))
-            value_b = float(request.POST.get('value_b'))
+            value_a = int(request.POST.get('value_a'))
+            value_b = int(request.POST.get('value_b'))
 
-            # Lấy và sắp xếp dữ liệu từ database
-            data_upload_file = Upload_File.objects.all()
-            data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
-            quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
+            # Retrieve and sort data from the database
+            data_list = list(Upload_File.objects.values('attribute1', 'attribute2').order_by('attribute2'))
 
-            # In ra giá trị của attribute1 và attribute2 trong khoảng xác định
-            print(f"Giá trị của attribute1 và attribute2 trong khoảng {value_a} đến {value_b}:")
-            for item in data_list:
-                if value_a <= item[0] <= value_b:
-                    print(f"Attribute1: {item[0]}, Attribute2: {item[1]}")
+            quicksort(data_list, 0, len(data_list) - 1, attribute_index='attribute2')
 
-            # Tìm kiếm nhị phân giá trị trong khoảng xác định
-            start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index=0)
+            # Binary search for values within the specified range
+            start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index='attribute2')
 
             if start_index == -1:
-                return HttpResponse("Không có giá trị nằm trong khoảng xác định.")
+                return HttpResponse("No values found in the specified range.")
 
             end_index = start_index
-            while end_index < len(data_list) and data_list[end_index][0] <= value_b:
+            selected_data = []
+            while end_index < len(data_list) and data_list[end_index]['attribute2'] <= value_b:
+                # Add each item to the selected_data list
+                selected_data.append(data_list[end_index])
                 end_index += 1
 
-            # Chuẩn bị dữ liệu cho biểu đồ
-            labels, datas = prepare_chart_data(*zip(*data_list[start_index:end_index]))
+            # Prepare data for chart
+            labels = [item['attribute1'] for item in selected_data]
+            datas = [item['attribute2'] for item in selected_data]
 
-            # Render template với dữ liệu đã lọc cho biểu đồ
-            return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas})
+            # Print attribute1 and attribute2 for each item in selected_data to the terminal
+            for item in selected_data:
+                print(f"Attribute1: {item['attribute1']}, Attribute2: {item['attribute2']}")
+
+            # Render the HTML response with the selected_data
+            return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data})
 
         except (ValueError, TypeError) as e:
-            # Xử lý khi giá trị không hợp lệ được nhập vào
-            return HttpResponse(f"Lỗi: {e}")
+            # Handle invalid input values
+            return HttpResponse(f"Error: {e}")
 
     return render(request, 'dashboard/search_page_upload.html')
+
+
+
+
 
 
 # Trong views.py
