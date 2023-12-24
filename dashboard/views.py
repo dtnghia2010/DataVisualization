@@ -211,65 +211,6 @@ from . util import quicksort, partition
 #
 
 
-
-
-# Trong views.py
-
-# def search_page_upload(request):
-#     if request.method == 'POST':
-#
-#
-#             try:
-#                 value_a = float(request.POST.get('value_a'))
-#                 value_b = float(request.POST.get('value_b'))
-#
-#                 # Lấy và sắp xếp dữ liệu từ database
-#                 data_upload_file = Upload_File.objects.all()
-#                 data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
-#                 quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
-#
-#                 # In ra giá trị của attribute1 và attribute2 trong khoảng xác định
-#                 print(f"Giá trị của attribute1 và attribute2 trong khoảng {value_a} đến {value_b}:")
-#                 for item in data_list:
-#                     if value_a <= item[0] <= value_b:
-#                         print(f"Attribute1: {item[0]}, Attribute2: {item[1]}")
-#
-#                 # Tìm kiếm nhị phân giá trị trong khoảng xác định
-#                 start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index=0)
-#
-#                 if start_index == -1:
-#                     return HttpResponse("Không có giá trị nằm trong khoảng xác định.")
-#
-#                 end_index = start_index
-#                 while end_index < len(data_list) and data_list[end_index][0] <= value_b:
-#                     end_index += 1
-#
-#                 # Chuẩn bị dữ liệu cho biểu đồ
-#                 print(data_list[start_index:end_index])
-#                 labels, datas = zip(*data_list[start_index:end_index])
-#
-#
-#                 print("Labels:", labels)
-#                 print("Datas:", datas)
-#
-#                 # Render template với dữ liệu đã lọc cho biểu đồ
-#                 return render(request, "dashboard/search_page_upload.html", {'listlabels': datas, 'listdatas':labels })
-#
-#             except (ValueError, TypeError) as e:
-#                 # Xử lý khi giá trị không hợp lệ được nhập vào
-#                 return HttpResponse(f"Lỗi: {e}")
-#
-#
-#     return render(request, 'dashboard/search_page_upload.html')
-
-
-
-
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import Upload_File
-from .util import binary_search_range, quicksort
-
 # views.py
 
 from django.shortcuts import render
@@ -481,3 +422,53 @@ def search_page_upload(request):
 #
 #     return render(request, 'dashboard/upload_file.html', {'form': form, 'uploaded_files': uploaded_files})
 #
+
+# Trong views.py
+
+# def search_page_upload(request):
+#     if request.method == 'POST':
+#
+#
+#             try:
+#                 value_a = float(request.POST.get('value_a'))
+#                 value_b = float(request.POST.get('value_b'))
+#
+#                 # Lấy và sắp xếp dữ liệu từ database
+#                 data_upload_file = Upload_File.objects.all()
+#                 data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
+#                 quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
+#
+#                 # In ra giá trị của attribute1 và attribute2 trong khoảng xác định
+#                 print(f"Giá trị của attribute1 và attribute2 trong khoảng {value_a} đến {value_b}:")
+#                 for item in data_list:
+#                     if value_a <= item[0] <= value_b:
+#                         print(f"Attribute1: {item[0]}, Attribute2: {item[1]}")
+#
+#                 # Tìm kiếm nhị phân giá trị trong khoảng xác định
+#                 start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index=0)
+#
+#                 if start_index == -1:
+#                     return HttpResponse("Không có giá trị nằm trong khoảng xác định.")
+#
+#                 end_index = start_index
+#                 while end_index < len(data_list) and data_list[end_index][0] <= value_b:
+#                     end_index += 1
+#
+#                 # Chuẩn bị dữ liệu cho biểu đồ
+#                 print(data_list[start_index:end_index])
+#                 labels, datas = zip(*data_list[start_index:end_index])
+#
+#
+#                 print("Labels:", labels)
+#                 print("Datas:", datas)
+#
+#                 # Render template với dữ liệu đã lọc cho biểu đồ
+#                 return render(request, "dashboard/search_page_upload.html", {'listlabels': datas, 'listdatas':labels })
+#
+#             except (ValueError, TypeError) as e:
+#                 # Xử lý khi giá trị không hợp lệ được nhập vào
+#                 return HttpResponse(f"Lỗi: {e}")
+#
+#
+#     return render(request, 'dashboard/search_page_upload.html')
+
