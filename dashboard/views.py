@@ -15,6 +15,17 @@ import pandas as pd
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.db.models.functions import Cast
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Upload_File
+from .util import binary_search_range, quicksort
+import pandas as pd
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Upload_File
+from .views import  prepare_chart_data
+from . util import quicksort, partition
+
 
 
 # Hàm view cho trang chủ
@@ -166,12 +177,6 @@ def upload_sort(request):
     return render(request, "dashboard/upload_sort.html", {'listlabels': labels, 'listdatas': datas})
 
 
-import pandas as pd
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import Upload_File
-from .views import  prepare_chart_data
-from . util import quicksort, partition
 
 
 # def binary_search_range(arr, low, high, target_low, target_high, attribute_index):
@@ -213,10 +218,7 @@ from . util import quicksort, partition
 
 # views.py
 
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import Upload_File
-from .util import binary_search_range, quicksort
+
 
 def search_page_upload(request):
     if request.method == 'POST':
