@@ -264,17 +264,6 @@ from . util import quicksort, partition
 
 
 
-# Trong views.py
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import Upload_File
-from .util import binary_search_range, quicksort
-from django.db.models import F, FloatField
-
-# Trong views.py
-# views.py
-
-# views.py
 
 from django.shortcuts import render
 from django.http import HttpResponse
