@@ -19,13 +19,6 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Upload_File
 from .util import binary_search_range, quicksort
-import pandas as pd
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import Upload_File
-from .views import  prepare_chart_data
-from . util import quicksort, partition
-
 
 
 # Hàm view cho trang chủ
@@ -179,6 +172,7 @@ def upload_sort(request):
 
 
 
+
 # def binary_search_range(arr, low, high, target_low, target_high, attribute_index):
 #     # Tìm kiếm nhị phân trong khoảng từ target_low đến target_high
 #     while low <= high:
@@ -219,7 +213,12 @@ def upload_sort(request):
 # views.py
 
 
-
+import pandas as pd
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Upload_File
+from .views import  prepare_chart_data
+from . util import quicksort, partition
 def search_page_upload(request):
     if request.method == 'POST':
         try:
