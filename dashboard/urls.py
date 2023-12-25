@@ -10,6 +10,7 @@ urlpatterns = [
     # path('upload_sort', views.upload_sort, name='upload_sort'),
     path('sorting/Upload', views.processingUpload, name='sortUp'),
     path('sorting/Add', views.processingAdd, name='sortAdd'),
+    path('delete_add_data', views.delete_add_data, name='delete_add_data'),
 ]
 
 

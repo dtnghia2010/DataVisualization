@@ -1,9 +1,8 @@
-
 from django.contrib.admin.templatetags.admin_list import results
 from django.core.checks import messages
 
 from .models import Add_Data, Upload_File
-from .forms import Add_DataFrom, sortingForm
+from .forms import Add_DataFrom, sortingForm, DeleteForm_AddData
 import os
 from collections import Counter
 from django.shortcuts import render, redirect
@@ -13,7 +12,6 @@ import pandas as pd
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.db.models import Q
-
 
 
 # Hàm view cho trang chủ
@@ -56,6 +54,26 @@ def add_data(request):
 
 def addData_algorithms(request):
     return render(request, 'dashboard/addData_algorithms.html', {'data': data_for_chart, 'form': form})
+
+
+def delete_add_data(request):
+    if request.method == 'POST':
+        form = DeleteForm_AddData(request.POST)
+        if form.is_valid():
+            items_to_delete = form.cleaned_data['items_to_delete']
+            items_to_delete.delete()  # Delete selected items
+
+            # Redirect or perform any additional actions
+
+            data_for_chart = Add_Data.objects.all()
+            return render(request, 'dashboard/addData_algorithms.html', {'data': data_for_chart, 'form': form})  # Redirect to success page
+    else:
+        form = DeleteForm_AddData()
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'dashboard/delete.html', context)
 
 
 # Hàm view cho việc tải lên tệp CSV và lưu trữ dữ liệu vào database
@@ -104,8 +122,6 @@ def readfile(filename):
     print(data)
 
 
-
-
 # Hàm xử lý dữ liệu từ DataFrame và trả về danh sách nhãn và dữ liệu
 
 def process_data(attribute1, attribute2):
@@ -120,14 +136,13 @@ def process_data(attribute1, attribute2):
     return labels, datas
 
 
-
-
 def prepare_chart_data(labels, datas):
     # Chuyển danh sách về danh sách Python thông thường
     listlabels = labels
     listdatas = datas
 
     return listlabels, listdatas
+
 
 def quicksort(array, low, high):
     array_len = len(array)
@@ -136,11 +151,9 @@ def quicksort(array, low, high):
         pi = partition(array, low, high)
         quicksort(array, low, pi - 1)
 
-        quicksort(array, pi +1, high)
+        quicksort(array, pi + 1, high)
 
     return array
-
-
 
 
 def partition(array, low, high):
@@ -166,6 +179,7 @@ def partition(array, low, high):
     # Return the position from where partition is done
     return i + 1
 
+
 def processingUpload(request):
     # if request.method == 'POST':
     #     form = sortingForm(request.POST)
@@ -173,22 +187,22 @@ def processingUpload(request):
     #     if form.is_valid():
     #         algorithm = request.POST['algorithm']
 
-            data = Upload_File.objects.values('attribute2').values_list('attribute2','attribute1')
-            listlabels, listdatas = processSort(data)
-            return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels':listlabels, 'listdatas':listdatas})
-
+    data = Upload_File.objects.values('attribute2').values_list('attribute2', 'attribute1')
+    listlabels, listdatas = processSort(data)
+    return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels': listlabels, 'listdatas': listdatas})
 
 
 def processingAdd(request):
     # if request.method == 'POST':
     #     form = sortingForm(request.POST)
 
-        # if form.is_valid():
-        #     algorithm = request.POST['algorithm']
+    # if form.is_valid():
+    #     algorithm = request.POST['algorithm']
 
-            data = Add_Data.objects.values('population').values_list('population','country')
-            listlabels, listdatas = processSort(data)
-            return render(request, 'dashboard/upload_sort.html', {'listlabels':listlabels, 'listdatas':listdatas})
+    data = Add_Data.objects.values('population').values_list('population', 'country')
+    listlabels, listdatas = processSort(data)
+    return render(request, 'dashboard/upload_sort.html', {'listlabels': listlabels, 'listdatas': listdatas})
+
 
 def processSort(data):
     data_Dict = dict(data)
@@ -210,4 +224,3 @@ def processSort(data):
     listlabels, listdatas = prepare_chart_data(attr1, attr2)
 
     return listlabels, listdatas
-
