@@ -41,7 +41,7 @@
     }
 
     .t1{
-        font-size: 44px;
+        font-size: 50px;
         color: rgba(58.58, 61.92, 142.02, 0.90);
         text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     }
@@ -54,12 +54,85 @@
 
 </style>
 
-<div class="row MT-4 PT-4 b1" style="background-image: url('static/images/bg.jpg')">
+<img class="container-fluid" src="{% static 'images/banner.png' %}" alt="banner">
+
+<div class="media">
+    <img class="align-self-center mr-3 pt-5 pb-5" style="width: 500px" src="{% static 'images/creative.jpg' %}"
+         alt="Generic placeholder image">
+    <div class="media-body text-center pt-5" style="font-size: 20px">
+        <h3 class="text-center mt-5"><strong>HELLO DEAR!!! <i class='far fa-grin-squint' style='font-size:35px'></i></strong></h3>
+        Welcome to our first data visualization website! This is a platform designed to present information, data, and
+        insights in visually appealing and comprehensible ways. It leverages various graphical elements such as charts,
+        graphs, maps, infographics, and dashboards to help users interpret complex data easily.
+    </div>
+</div>
+
+<div class="media-body text-left pb-5" style="font-size: 20px">
+    <h3 class="text-center mt-5"><strong>WHAT IS DATA VISUALIZATION?</strong></h3>
+    <img class="mb-3" style="width: 80%; display: block; margin-left: auto; margin-right: auto"
+     src="{% static 'images/wondering.jpg' %}"
+     alt="Generic placeholder image">
+    <p>
+    Data visualization is a way of presenting information in a way that helps people understand it better. It’s a way of
+    making complex information more accessible and easier to process so that people can make decisions based on the data
+    instead of just what they’ve heard.
+    </p>
+    <p>
+    Data visualization can take many forms, from simple graphs to interactive maps and infographics. And with so many
+    different types of data available now, there are also plenty of ways to visualize it.
+    </p>
+    Data visualization is used for many purposes, including:
+    <ul>
+        <li>Presenting information to other people.</li>
+        <li>Solving problems by exploring data interactively.</li>
+        <li>Plotting large datasets and finding patterns in them.</li>
+    </ul>
+</div>
+
+
+<div class="media-body text-left" style="font-size: 20px">
+    <h3 class="text-center mt-5"><strong>WHY DO WE NEED DATA VISUALIZATION?</strong></h3>
+    <img style="width: 80%; display: block; margin-left: auto; margin-right: auto"
+     src="{% static 'images/modern_age.jpg' %}"
+     alt="Generic placeholder image">
+    <p>
+        Why do we need data visualization? Because we’re living in an age where there’s more information than ever
+        before.
+        There are so many different sources giving us so much information, and it’s all coming at us at once. The
+        internet
+        has created a world where we’re constantly bombarded with new ideas, new facts, and new knowledge.
+    </p>
+    <p>
+        But how do you get all this information? And how do you make sense of it? Data visualization helps us organize
+        the
+        massive amounts of information coming at us every day into digestible chunks that both our eyes and our brains
+        can
+        easily digest. Data visualization allows us to take in new information without being overwhelmed by it and
+        without
+        forgetting what we’ve learned.
+    </p>
+</div>
+
+
+<div class="media">
+    <div class="media-body text-center pt-5" style="font-size: 20px">
+        <h3 class="text-center mt-5"><strong>YOU CAN...</strong></h3>
+        You can choose any type of data you want, and we can create eye-catching, clear, specific, and easy-to-use
+        charts.
+        <a href="#footer"><h5 class="text-center mt-2">Let's try it!! <i class='far fa-hand-point-down'
+                                                                      style='font-size:25px'></i></h5></a>
+    </div>
+    <img class="align-self-left mr-3 pt-5 pb-5" style="width: 500px; padding-left: 20px"
+         src="{% static 'images/webdesign.jpg' %}"
+         alt="Generic placeholder image">
+</div>
+
+<div id="footer" class="row MT-4 PT-4 b1" style="background-image: url('static/images/bg.jpg')">
     <div class="col-md-12 shadow">
         <div class="row-md-2">
             <h1 class="row-md-1 text-center p-5 t1">Please choose your option</h1>
             <hr>
-            <div class="row-md-1 ">
+            <div class="row-md-1">
                 <div class="col-md-12 p-4">
                     <a href="{% url 'add_data' %}" class="col-inline-md-1 btn but1">Add Data</a>
                     <a href="{% url 'upload_file' %}" class="col-inline-md-1 btn  but2">Upload File</a>
