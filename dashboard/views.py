@@ -3,7 +3,7 @@ from django.contrib.admin.templatetags.admin_list import results
 from django.core.checks import messages
 
 from .models import Add_Data, Upload_File
-from .forms import Add_DataFrom, sortingForm
+from .forms import Add_DataFrom, sortingForm, DeleteForm_AddData
 import os
 from collections import Counter
 from django.shortcuts import render, redirect
@@ -57,6 +57,26 @@ def addData_algorithms(request):
     return render(request, 'dashboard/addData_algorithms.html', {'data': data_for_chart, 'form': form})
 
 
+def delete_add_data(request):
+    if request.method == 'POST':
+        form = DeleteForm_AddData(request.POST)
+        if form.is_valid():
+            items_to_delete = form.cleaned_data['items_to_delete']
+            items_to_delete.delete()  # Delete selected items
+
+            # Redirect or perform any additional actions
+
+            data_for_chart = Add_Data.objects.all()
+            return render(request, 'dashboard/addData_algorithms.html', {'data': data_for_chart, 'form': form})  # Redirect to success page
+    else:
+        form = DeleteForm_AddData()
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'dashboard/delete.html', context)
+
+
 # Hàm view cho việc tải lên tệp CSV và lưu trữ dữ liệu vào database
 def upload_file(request):
     global attribute1, attribute2
@@ -66,6 +86,7 @@ def upload_file(request):
     Upload_File.objects.all().delete()
 
     if request.method == 'POST':
+
         uploaded_file = request.FILES['document']
         attribute1 = request.POST.get('attribute1')
         attribute2 = request.POST.get('attribute2')

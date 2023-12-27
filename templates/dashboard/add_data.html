@@ -38,14 +38,19 @@
         height: 310px;
     }
 
+    .t{
+        font-weight: 600;
+    }
+
 </style>
 
 <div class="media">
     <div class="media-body text-left" style="font-size: 20px">
         <h1 class="text-left mt-5">Add your own data to generate <br> the best products</h1>
         <p style="position: absolute" class="text-right">
-        <i>You can choose any type of data you want, and we can create eye-catching, clear, specific, and easy-to-use
-        charts.</i>
+            <i>You can provide the population data for various countries around the world, and we can display that data
+                in the
+                form of charts.</i>
         </p>
     </div>
     <img class="align-self-left mr-3 pb-5" style="width: 250px; padding-left: 20px"
@@ -59,7 +64,7 @@
             <h2 class="row-md-1 text-center text p-4">Please add your data</h2>
             <hr>
             <div class="row-md-1 form-group f1 pt-3">
-                <form method="POST">
+                <form method="POST" class="t">
                     {% csrf_token %}
                     {{ form }}
                     <hr>

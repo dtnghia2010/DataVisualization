@@ -11,6 +11,11 @@ class Add_DataFrom(forms.ModelForm):
         fields = '__all__'
 
 
+class DeleteForm_AddData(forms.Form):
+    items_to_delete = forms.ModelMultipleChoiceField(queryset=Add_Data.objects.all(),
+                                                     widget=forms.CheckboxSelectMultiple)
+
+
 class Upload_FileForm(forms.ModelForm):
     # Biểu mẫu cho dữ liệu từ tệp CSV được tải lên
     class Meta:
@@ -21,6 +26,7 @@ class Upload_FileForm(forms.ModelForm):
 ALGORITHM_CHOICES = [
     ('quicksort', 'quicksort'),
 ]
+
 
 class sortingForm(forms.Form):
     algorithm = forms.CharField(label='Selected algorithm', widget=forms.Select(choices=ALGORITHM_CHOICES))
