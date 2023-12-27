@@ -12,7 +12,7 @@ urlpatterns = [
     path('sorting/Add', views.processingAdd, name='sortAdd'),
     path('delete_add_data', views.delete_add_data, name='delete_add_data'),
     path('search_page_upload', views.search_page_upload, name='search_page_upload'),
-    path('search_add_data/', views.search_add_data, name='search_add_data')
+    path('search_add_data/', views.search_add_data, name='search_add_data'),
     path('predict_data', views.predict_data, name='predict_data'),
 ]
 
