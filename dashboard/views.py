@@ -1,23 +1,21 @@
-
-from django.contrib.admin.templatetags.admin_list import results
+import matplotlib
 from django.core.checks import messages
 
 from .models import Add_Data, Upload_File
 from .forms import Add_DataFrom, sortingForm
 import os
-from collections import Counter
 from django.shortcuts import render, redirect
-from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
 import pandas as pd
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.db.models import Q
+
 
 
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from matplotlib import pyplot as plt
+matplotlib.use('agg')
 
 # Hàm view cho trang chủ
 def index(request):
@@ -102,54 +100,73 @@ def uploadFile_algorithms(request):
 def predict_data(request, *args, **kwargs):
     context = {}
     if request.method == 'POST':
-        uploaded_file = request.FILES['document']
-        CountryName = request.POST.get('attribute1')
-        predictYear = request.POST.get('attribute2')
-        if uploaded_file.name.endswith('csv'):
-            savefile = FileSystemStorage()
-            name = savefile.save(uploaded_file.name, uploaded_file)
-            file_directory = os.path.join(settings.MEDIA_ROOT, name)
+        if request.method == 'POST':
 
-            readPredict(file_directory)
-            extract_data(CountryName)
+            uploaded_file = request.FILES['document']
+            attribute1 = request.POST.get('attribute1')
+            attribute2 = request.POST.get('attribute2')
 
-            #scaling data
-            scaler_X = StandardScaler()
-            scaler_y = StandardScaler()
+            if uploaded_file.name.endswith('csv'):
+                uploaded_file = request.FILES['document']
+                CountryName = request.POST.get('attribute1')
+                fromYear = request.POST.get('from')
+                toYear = request.POST.get('to')
+                prediction = request.POST.get('prediction')
+                if uploaded_file.name.endswith('csv'):
+                    savefile = FileSystemStorage()
+                    name = savefile.save(uploaded_file.name, uploaded_file)
+                    file_directory = os.path.join(settings.MEDIA_ROOT, name)
 
-            X_scaled = scaler_X.fit_transform(X)
-            y_scaled = scaler_y.fit_transform(y)
+                    readPredict(file_directory)
+                    extract_data(CountryName, fromYear, toYear)
 
-            #setup and train model
-            lin_model = LinearRegressionCustom(iterations=1000, learning_rate=0.01)
-            lin_model.fit(X_scaled, y_scaled)
+                    #scaling data
+                    scaler_X = StandardScaler()
+                    scaler_y = StandardScaler()
 
-            # get scaling Predictions
-            train_predictions_scaled = lin_model.predict(X_scaled)
+                    X_scaled = scaler_X.fit_transform(X)
+                    y_scaled = scaler_y.fit_transform(y)
 
-            #back to original scale
-            train_predictions = scaler_y.inverse_transform(train_predictions_scaled)
+                    #setup and train model
+                    lin_model = LinearRegressionCustom(iterations=1000, learning_rate=0.01)
+                    lin_model.fit(X_scaled, y_scaled)
 
-            # Plotting
-            plt.scatter(X, y, color='black', label='Actual data')
-            plt.plot(X, train_predictions, color='blue', linewidth=3, label='Regression line')
-            plt.xlabel('X-axis label')
-            plt.ylabel('Y-axis label')
-            plt.legend()
-            plt.show()
+                    # get scaling Predictions
+                    train_predictions_scaled = lin_model.predict(X_scaled)
 
-            # Scale the new input feature
-            scaled_new_year = scaler_X.transform([[predictYear]])
+                    #back to original scale
+                    train_predictions = scaler_y.inverse_transform(train_predictions_scaled)
 
-            # Predict the scaled output
-            scaled_prediction = lin_model.predict(scaled_new_year)
+                    # Scale the new input feature
+                    scaled_new_year = scaler_X.transform([[prediction]])
 
-            # Inverse transform to get the prediction in the original scale
-            predicted_population = scaler_y.inverse_transform(scaled_prediction)
+                    # Predict the scaled output
+                    scaled_prediction = lin_model.predict(scaled_new_year)
 
-            print(f"Predicted population for the year {predictYear}: {predicted_population[0, 0]}")
+                    # Inverse transform to get the prediction in the original scale
+                    predicted_population = scaler_y.inverse_transform(scaled_prediction)
 
-    return render(request, "dashboard/predict_data.html", {})
+                    print(f"Predicted population for the year {prediction}: {predicted_population[0, 0]}")
+                    context['predicted_population'] = np.round(predicted_population[0, 0])
+                    if(os.path.join(settings.PLOT_ROOT, 'plot.png')):
+                        os.remove(os.path.join(settings.PLOT_ROOT, 'plot.png'))
+                    plot_filename = generatePlot(X, y, train_predictions)
+                    context['plot_filename'] = 'plot.png'
+                else:
+                    context['plot_filename'] = None
+            else:
+                messages.warning(request, 'File was not uploaded, please use a CSV file extension')
+
+    return render(request, "dashboard/predict_data.html", context)
+
+def generatePlot(X, y, train_predictions):
+    plt.clf()
+    plt.style.use("fivethirtyeight")
+    plt.scatter(X, y, color='black', label='Actual data')
+    plt.plot(X, train_predictions, color='blue', linewidth=3, label='Regression line')
+    plot_filename = os.path.join(settings.PLOT_ROOT, 'plot.png')
+    plt.savefig(plot_filename)
+    return plot_filename
 
 # Hàm đọc dữ liệu từ tệp CSV và lưu vào biến toàn cục `data`
 def readfile(filename):
@@ -162,10 +179,10 @@ def readPredict(filename):
     global df
     df = pd.read_csv(filename)
 
-def extract_data(CountryName):
+def extract_data(CountryName, fromYear, toYear):
     global train_data, X, y
-    populations = df.loc[df['Country Name'] == CountryName, '2014':'2022'].values.flatten()
-    years = df.loc[df['Country Name'] == CountryName, '2014':'2022'].columns.tolist()
+    populations = df.loc[df['Country Name'] == CountryName, fromYear:toYear].values.flatten()
+    years = df.loc[df['Country Name'] == CountryName, fromYear:toYear].columns.tolist()
     train_data = {
         "Population": populations,
         "Year": years

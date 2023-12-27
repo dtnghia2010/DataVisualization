@@ -126,6 +126,8 @@ STATICFILES_DIRS = [
 ]
 MEDIA_URL = '/images/'
 
+PLOT_ROOT = os.path.join(BASE_DIR, 'static/prediction')
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 
 
