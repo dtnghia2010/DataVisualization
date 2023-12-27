@@ -1,0 +1,48 @@
+{% extends 'partials/base.html' %}
+
+{% block title %}SEARCH ALGORITHM{% endblock %}
+
+{% block content %}
+    <h1>SEARCH ALGORITHM</h1>
+
+    <p>Please enter values for a and b to search for Attribute 2 values within the range of a and b.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <label for="value_a">Value a:</label>
+        <input type="text" name="value_a" id="value_a" required="required">
+
+        <label for="value_b">Value b:</label>
+        <input type="text" name="value_b" id="value_b" required="required">
+
+        <button type="submit">Search</button>
+    </form>
+
+    {% if listlabels and listdatas %}
+        <!-- Display your chart here using listlabels and listdatas -->
+        <canvas id="myChart" width="400" height="400" class="mb-4"></canvas>
+        <script>
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ listlabels|safe }},
+                    datasets: [{
+                        label: 'Attribute 2',
+                        data: {{ listdatas|safe }},
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
+    {% endif %}
+{% endblock %}

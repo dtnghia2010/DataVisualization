@@ -12,8 +12,11 @@ from django.contrib import messages
 import pandas as pd
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.db.models import Q
-
+from django.db.models.functions import Cast
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Upload_File
+from .util import binary_search_range, quicksort
 
 
 # Hàm view cho trang chủ
@@ -24,11 +27,7 @@ def index(request):
 # Hàm view cho việc add_data quốc gia và dân số
 def add_data(request):
     global data_for_chart, form
-    # if 'q' in request.GET:
-    #     q = request.GET['q']
-    #     multiple_q = Q(Q(country__icontains=q) | Q(population__icontains=q))
-    #     data = Add_Data.objects.filter(multiple_q)
-    # else:
+
 
     data = Add_Data.objects.all()
     formSort = sortingForm()
@@ -67,7 +66,6 @@ def upload_file(request):
     Upload_File.objects.all().delete()
 
     if request.method == 'POST':
-
         uploaded_file = request.FILES['document']
         attribute1 = request.POST.get('attribute1')
         attribute2 = request.POST.get('attribute2')
@@ -129,21 +127,21 @@ def prepare_chart_data(labels, datas):
 
     return listlabels, listdatas
 
-def quicksort(array, low, high):
+
+
+def quicksort_(array, low, high):
     array_len = len(array)
 
     if low < high:
-        pi = partition(array, low, high)
-        quicksort(array, low, pi - 1)
+        pi = partition_(array, low, high)
+        quicksort_(array, low, pi - 1)
 
-        quicksort(array, pi +1, high)
+        quicksort_(array, pi +1, high)
 
     return array
 
 
-
-
-def partition(array, low, high):
+def partition_(array, low, high):
     # choose the rightmost element as pivot
     pivot = array[high]
 
@@ -166,6 +164,146 @@ def partition(array, low, high):
     # Return the position from where partition is done
     return i + 1
 
+
+
+
+# def upload_sort(request):
+#     # Lấy dữ liệu từ database
+#     data_upload_file = Upload_File.objects.all()
+#
+#     # Chuyển dữ liệu thành danh sách để sử dụng trong thuật toán quicksort
+#     data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
+#
+#     # Kiểm tra xem data_list có giữ nguyên dữ liệu hay không
+#     if data_list:
+#         # Thực hiện Quick Sort
+#         quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
+#
+#         # Chuẩn bị dữ liệu cho biểu đồ
+#         labels, datas = zip(*data_list)
+#
+#         # In ra giá trị của labels và datas
+#         print("Labels:", labels)
+#         print("Datas:", datas)
+#     else:
+#         # Xử lý trường hợp khi data_list rỗng
+#         labels, datas = [], []
+#
+#     # Render template với dữ liệu đã sắp xếp
+#     return render(request, "dashboard/upload_sort.html", {'listlabels': labels, 'listdatas': datas})
+#
+
+
+
+import pandas as pd
+from .models import Upload_File
+from .views import  prepare_chart_data
+from . util import quicksort, partition
+def search_page_upload(request):
+    if request.method == 'POST':
+        try:
+            # Lấy giá trị của 'value_a' và 'value_b' từ form
+            value_a = int(request.POST.get('value_a'))
+            value_b = int(request.POST.get('value_b'))
+
+            # Truy vấn và sắp xếp dữ liệu từ cơ sở dữ liệu
+            data_list = list(Upload_File.objects.values('attribute1', 'attribute2').order_by('attribute2'))
+
+            # Sử dụng quicksort để sắp xếp data_list dựa trên 'attribute2'
+            quicksort(data_list, 0, len(data_list) - 1, attribute_index='attribute2')
+
+            # Tìm kiếm nhị phân giá trị trong khoảng xác định
+            start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index='attribute2')
+
+            if start_index == -1:
+                return HttpResponse("Không tìm thấy giá trị trong khoảng xác định.")
+
+            end_index = start_index
+            selected_data = []
+
+            # Thu thập dữ liệu trong khoảng xác định vào danh sách selected_data
+            while end_index < len(data_list) and data_list[end_index]['attribute2'] <= value_b:
+                selected_data.append(data_list[end_index])
+                end_index += 1
+
+            # Chuẩn bị dữ liệu cho biểu đồ
+            labels = [item['attribute1'] for item in selected_data]
+            datas = [item['attribute2'] for item in selected_data]
+
+            # In attribute1 và attribute2 cho từng item trong selected_data ra terminal
+            for item in selected_data:
+                print(f"Attribute1: {item['attribute1']}, Attribute2: {item['attribute2']}")
+
+            # Render HTML response với dữ liệu đã chọn
+            return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data})
+
+        except (ValueError, TypeError) as e:
+            # Xử lý giá trị nhập không hợp lệ
+            return HttpResponse(f"Lỗi: {e}")
+
+    # Render form khi request là GET
+    return render(request, 'dashboard/search_page_upload.html')
+
+
+
+
+
+
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Add_Data
+from .util import binary_search_range, quicksort
+def search_add_data(request):
+    if request.method == 'POST':
+        try:
+            # Lấy giá trị từ form
+            value_a = int(request.POST.get('value_a'))
+            value_b = int(request.POST.get('value_b'))
+
+            # Truy vấn và sắp xếp dữ liệu từ model Add_Data
+            data_list = list(Add_Data.objects.values('country', 'population').order_by('population'))
+
+            # Sử dụng quicksort để sắp xếp data_list dựa trên 'population'
+            quicksort(data_list, 0, len(data_list) - 1, attribute_index='population')
+
+            # Tìm kiếm nhị phân giá trị trong khoảng xác định
+            start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index='population')
+
+            if start_index == -1:
+                return HttpResponse("Không có giá trị nằm trong khoảng xác định.")
+
+            end_index = start_index
+            selected_data = []
+
+            # Thu thập dữ liệu trong khoảng xác định vào danh sách selected_data
+            while end_index < len(data_list) and data_list[end_index]['population'] <= value_b:
+                selected_data.append(data_list[end_index])
+                end_index += 1
+
+            # Điều chỉnh start_index để bao gồm tất cả các phần tử trong khoảng xác định
+            while start_index > 0 and data_list[start_index - 1]['population'] >= value_a:
+                start_index -= 1
+                selected_data.insert(0, data_list[start_index])
+
+            # In country và population cho từng phần tử trong selected_data ra terminal
+            for item in selected_data:
+                print(f"Country: {item['country']}, Population: {item['population']}")
+
+            # Chuẩn bị dữ liệu cho biểu đồ
+            labels = [item['country'] for item in selected_data]
+            datas = [item['population'] for item in selected_data]
+
+            # Render HTML response với dữ liệu đã chọn
+            return render(request, "dashboard/search_add_data.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data})
+
+        except (ValueError, TypeError) as e:
+            # Xử lý khi giá trị nhập không hợp lệ
+            return HttpResponse(f"Lỗi: {e}")
+
+    # Render form khi request là GET
+    return render(request, 'dashboard/search_add_data.html')
+
+
 def processingUpload(request):
     # if request.method == 'POST':
     #     form = sortingForm(request.POST)
@@ -177,6 +315,133 @@ def processingUpload(request):
             listlabels, listdatas = processSort(data)
             return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels':listlabels, 'listdatas':listdatas})
 
+
+
+
+#
+# from django.shortcuts import render
+# from .models import Upload_File
+# from .views import quicksort, partition, prepare_chart_data
+#
+# def upload_sort_and_print(request):
+#     # Lấy dữ liệu từ database
+#     data_upload_file = Upload_File.objects.all()
+#
+#     # Chuyển dữ liệu thành danh sách để sử dụng trong thuật toán quicksort
+#     data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
+#
+#     # Kiểm tra xem data_list có giữ nguyên dữ liệu hay không
+#     if data_list:
+#         # Thực hiện Quick Sort
+#         quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
+#
+#         # In ra giá trị của attribute1 và attribute2
+#         print("Danh sách đã sắp xếp:")
+#         for item in data_list:
+#             print(f"Attribute1: {item[0]}, Attribute2: {item[1]}")
+#
+#         # Chuẩn bị dữ liệu cho biểu đồ (nếu cần)
+#         labels, datas = prepare_chart_data(*zip(*data_list))
+#
+#         # Trả về danh sách đã sắp xếp để sử dụng cho binary search
+#         return data_list
+#     else:
+#         # Xử lý trường hợp khi data_list rỗng
+#         print("Dữ liệu rỗng.")
+#         return []
+# sorted_data_list = upload_sort_and_print(request)
+
+
+
+
+
+
+
+
+
+# Import necessary libraries and modules
+
+# def search_page_upload(request):
+#     if request.method == 'POST':
+#         try:
+#             value_a = float(request.POST.get('value_a'))
+#             value_b = float(request.POST.get('value_b'))
+#
+#             # Retrieve and sort data from the database
+#             data_upload_file = Upload_File.objects.all()
+#             data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
+#             quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
+#
+#             # Binary search for values within the specified range
+#             start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index=0)
+#
+#             if start_index == -1:
+#                 return HttpResponse("No values found in the specified range.")
+#
+#             end_index = start_index
+#             while end_index < len(data_list) and data_list[end_index][0] <= value_b:
+#                 end_index += 1
+#
+#             # Prepare data for chart
+#             labels, datas = prepare_chart_data(*zip(*data_list[start_index:end_index]))
+#
+#             return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas})
+#
+#         except (ValueError, TypeError) as e:
+#             # Handle invalid input values
+#             return HttpResponse(f"Error: {e}")
+#
+#     return render(request, 'dashboard/search_page_upload.html')
+
+
+# def upload_file(request, *args, **kwargs):
+#     global attribute1, attribute2
+#     context = {}
+#     listlabels, listdatas = None, None
+#
+#     if request.method == 'POST':
+#         uploaded_file = request.FILES['document']
+#         attribute1 = request.POST.get('attribute1')
+#         attribute2 = request.POST.get('attribute2')
+#
+#         if uploaded_file.name.endswith('csv'):
+#             savefile = FileSystemStorage()
+#             name = savefile.save(uploaded_file.name, uploaded_file)
+#
+#             file_directory = os.path.join(settings.MEDIA_ROOT, name)
+#             readfile(file_directory)
+#
+#             labels, datas = process_data(attribute1, attribute2)
+#             listlabels, listdatas = prepare_chart_data(labels, datas)
+#
+#         else:
+#             messages.warning(request, 'File was not uploaded, please use a CSV file extension')
+#
+#     return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
+
+
+#     form = UploadFileForm(request.POST, request.FILES)
+#     if form.is_valid():
+#         uploaded_file = form.save(commit=False)
+#
+#         # Đọc dữ liệu từ file CSV
+#         csv_data = read_csv(uploaded_file.file.path)
+#
+#         # Lưu trữ dữ liệu vào cơ sở dữ liệu
+#         for row in csv_data:
+#             # Tạo một bản ghi mới cho mỗi dòng trong CSV
+#             new_record = CountryData(attribute1=uploaded_file.attribute1, attribute2=uploaded_file.attribute2, country=row[0], population=row[1])
+#             new_record.save()
+#
+#         uploaded_file.save()
+#
+#         return redirect('upload_file')
+# else:
+#     form = UploadFileForm()
+#
+# uploaded_files = UploadedFile.objects.all()
+
+# return render(request, 'dashboard/upload_file.html')
 
 
 def processingAdd(request):
@@ -197,7 +462,7 @@ def processSort(data):
 
     data_List = list(data_Dict.keys())
 
-    data_sorted = quicksort(data_List, 0, len(data_List) - 1)
+    data_sorted = quicksort_(data_List, 0, len(data_List) - 1)
 
     Sorted_dict = {i: data_Dict[i] for i in data_sorted}
 
