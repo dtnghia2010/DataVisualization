@@ -3,7 +3,7 @@
 {% block title %}ADD DATA{% endblock %}
 
 {% block content %}
-
+{% load static %}
 <style>
 
     .f1{
@@ -33,93 +33,38 @@
         color: white;
     }
 
-    .a1{
-        margin-left: 240px;
-        border-color: rgba(58.58, 61.92, 142.02, 0.90);
-        border-style: solid;
-        border-width: 2px;
-        color: black;
-    }
-
-    .a1:hover{
-        text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
+    .b1{
+        background-size: cover;
+        height: 310px;
     }
 
 </style>
 
-<div class=" row justify-content-center container">
-    <div class="col-md-12">
-        <div class="border p-3 shadow ">
-            <h2 class="text-center text">Add Data</h2>
+<div class="media">
+    <div class="media-body text-left" style="font-size: 20px">
+        <h1 class="text-left mt-5">Add your own data to generate <br> the best products</h1>
+        <p style="position: absolute" class="text-right">
+        <i>You can choose any type of data you want, and we can create eye-catching, clear, specific, and easy-to-use
+        charts.</i>
+        </p>
+    </div>
+    <img class="align-self-left mr-3 pb-5" style="width: 250px; padding-left: 20px"
+         src="{% static 'images/gradient.png' %}"
+         alt="Generic placeholder image">
+</div>
+
+<div class="row MT-4 PT-4 b1" style="background-image: url('static/images/bg.jpg')">
+    <div class="col-md-12 shadow">
+        <div class=class="row-md-2">
+            <h2 class="row-md-1 text-center text p-4">Please add your data</h2>
             <hr>
-            <div class="form-group f1">
+            <div class="row-md-1 form-group f1 pt-3">
                 <form method="POST">
                     {% csrf_token %}
                     {{ form }}
+                    <hr>
                     <input class="btn but1 " type="submit" value="Add">
                 </form>
-            </div>
-
-            <!-- Nút Algorithm tương tự như trong Upload_file.html -->
-            <div class="form-group f1">
-                <button class="btn but1" type="button" data-toggle="collapse" data-target="#algorithmOptions" aria-expanded="false" aria-controls="algorithmOptions">
-                    Algorithm
-                </button>
-                <div class="collapse" id="algorithmOptions">
-                    <div class="card card-body">
-                        <a class="btn a1" href="{% url 'upload_sort' %}">Sort</a>
-                    </div>
-                    <div class="card card-body">
-                        <a class="btn a1" href="{% url 'search_add_data' %}">Search</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-8 my-4">
-        <div class="bg-white">
-            <div class="card-body">
-                <canvas id="myChart" width="400" height="300"></canvas>
-                <script>
-                    var ctx = document.getElementById('myChart').getContext('2d');
-                    var myChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: [{% for data in data %} '{{ data.country }}', {% endfor %}],
-                            datasets: [{
-                                label: '# of Populations',
-                                data: [{% for data in data %} {{ data.population }}, {% endfor %}],
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                y: [{
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }]
-                            }
-                        }
-                    });
-                </script>
             </div>
         </div>
     </div>
