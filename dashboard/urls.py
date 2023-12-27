@@ -7,10 +7,10 @@ urlpatterns = [
     path('addData_algorithms', views.addData_algorithms, name='addData_algorithms'),
     path('upload_file', views.upload_file, name='upload_file'),
     path('uploadFile_algorithms', views.uploadFile_algorithms, name='uploadFile_algorithms'),
-    # path('upload_sort', views.upload_sort, name='upload_sort'),
     path('sorting/Upload', views.processingUpload, name='sortUp'),
     path('sorting/Add', views.processingAdd, name='sortAdd'),
-    # path('upload_sort', views.upload_sort, name='upload_sort'),
     path('search_page_upload', views.search_page_upload, name='search_page_upload'),
     path('search_add_data/', views.search_add_data, name='search_add_data')
 ]
+
+

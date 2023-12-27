@@ -127,19 +127,21 @@ def prepare_chart_data(labels, datas):
 
     return listlabels, listdatas
 
-def quicksort(array, low, high):
+
+
+def quicksort_(array, low, high):
     array_len = len(array)
 
     if low < high:
-        pi = partition(array, low, high)
-        quicksort(array, low, pi - 1)
+        pi = partition_(array, low, high)
+        quicksort_(array, low, pi - 1)
 
-        quicksort(array, pi +1, high)
+        quicksort_(array, pi +1, high)
 
     return array
 
 
-def partition(array, low, high):
+def partition_(array, low, high):
     # choose the rightmost element as pivot
     pivot = array[high]
 
@@ -165,37 +167,35 @@ def partition(array, low, high):
 
 
 
-def upload_sort(request):
-    # Lấy dữ liệu từ database
-    data_upload_file = Upload_File.objects.all()
-
-    # Chuyển dữ liệu thành danh sách để sử dụng trong thuật toán quicksort
-    data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
-
-    # Kiểm tra xem data_list có giữ nguyên dữ liệu hay không
-    if data_list:
-        # Thực hiện Quick Sort
-        quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
-
-        # Chuẩn bị dữ liệu cho biểu đồ
-        labels, datas = zip(*data_list)
-
-        # In ra giá trị của labels và datas
-        print("Labels:", labels)
-        print("Datas:", datas)
-    else:
-        # Xử lý trường hợp khi data_list rỗng
-        labels, datas = [], []
-
-    # Render template với dữ liệu đã sắp xếp
-    return render(request, "dashboard/upload_sort.html", {'listlabels': labels, 'listdatas': datas})
-
+# def upload_sort(request):
+#     # Lấy dữ liệu từ database
+#     data_upload_file = Upload_File.objects.all()
+#
+#     # Chuyển dữ liệu thành danh sách để sử dụng trong thuật toán quicksort
+#     data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
+#
+#     # Kiểm tra xem data_list có giữ nguyên dữ liệu hay không
+#     if data_list:
+#         # Thực hiện Quick Sort
+#         quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
+#
+#         # Chuẩn bị dữ liệu cho biểu đồ
+#         labels, datas = zip(*data_list)
+#
+#         # In ra giá trị của labels và datas
+#         print("Labels:", labels)
+#         print("Datas:", datas)
+#     else:
+#         # Xử lý trường hợp khi data_list rỗng
+#         labels, datas = [], []
+#
+#     # Render template với dữ liệu đã sắp xếp
+#     return render(request, "dashboard/upload_sort.html", {'listlabels': labels, 'listdatas': datas})
+#
 
 
 
 import pandas as pd
-from django.shortcuts import render
-from django.http import HttpResponse
 from .models import Upload_File
 from .views import  prepare_chart_data
 from . util import quicksort, partition
@@ -303,6 +303,17 @@ def search_add_data(request):
     # Render form khi request là GET
     return render(request, 'dashboard/search_add_data.html')
 
+
+def processingUpload(request):
+    # if request.method == 'POST':
+    #     form = sortingForm(request.POST)
+    #
+    #     if form.is_valid():
+    #         algorithm = request.POST['algorithm']
+
+            data = Upload_File.objects.values('attribute2').values_list('attribute2','attribute1')
+            listlabels, listdatas = processSort(data)
+            return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels':listlabels, 'listdatas':listdatas})
 
 
 
@@ -451,7 +462,7 @@ def processSort(data):
 
     data_List = list(data_Dict.keys())
 
-    data_sorted = quicksort(data_List, 0, len(data_List) - 1)
+    data_sorted = quicksort_(data_List, 0, len(data_List) - 1)
 
     Sorted_dict = {i: data_Dict[i] for i in data_sorted}
 
