@@ -266,6 +266,80 @@ def search_page_upload(request):
 
 
 
+# Trong views.py
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Add_Data
+from .util import binary_search_range, quicksort
+
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Add_Data
+from .util import binary_search_range, quicksort
+
+# Trong views.py
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Add_Data
+from .util import binary_search_range, quicksort
+# Trong views.py
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Add_Data
+from .util import binary_search_range, quicksort
+
+def search_add_data(request):
+    if request.method == 'POST':
+        try:
+            # Get values from the form
+            value_a = int(request.POST.get('value_a'))
+            value_b = int(request.POST.get('value_b'))
+
+            # Query and sort data from the Add_Data model
+            data_list = list(Add_Data.objects.values('country', 'population').order_by('population'))
+
+            # Use quicksort to sort data_list based on 'population'
+            quicksort(data_list, 0, len(data_list) - 1, attribute_index='population')
+
+            # Binary search for values in the specified range
+            start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index='population')
+
+            if start_index == -1:
+                return HttpResponse("No values found in the specified range.")
+
+            end_index = start_index
+            selected_data = []
+
+            # Collect data in the specified range into the selected_data list
+            while end_index < len(data_list) and data_list[end_index]['population'] <= value_b:
+                selected_data.append(data_list[end_index])
+                end_index += 1
+
+            # Adjust the start_index to include all elements within the specified range
+            while start_index > 0 and data_list[start_index - 1]['population'] >= value_a:
+                start_index -= 1
+                selected_data.insert(0, data_list[start_index])
+
+            # Print country and population for each item in selected_data to the terminal
+            for item in selected_data:
+                print(f"Country: {item['country']}, Population: {item['population']}")
+
+            # Prepare data for the chart
+            labels = [item['country'] for item in selected_data]
+            datas = [item['population'] for item in selected_data]
+
+            # Render HTML response with the selected data
+            return render(request, "dashboard/search_add_data.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data})
+
+        except (ValueError, TypeError) as e:
+            # Handle invalid input values
+            return HttpResponse(f"Error: {e}")
+
+    # Render the form when the request is GET
+    return render(request, 'dashboard/search_add_data.html')
+
+
+
 
 
 
