@@ -1,5 +1,4 @@
-
-from django.contrib.admin.templatetags.admin_list import results
+import matplotlib
 from django.core.checks import messages
 
 from .models import Add_Data, Upload_File
@@ -18,6 +17,11 @@ from django.http import HttpResponse
 from .models import Upload_File
 from .util import binary_search_range, quicksort
 
+
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from matplotlib import pyplot as plt
+matplotlib.use('agg')
 
 # Hàm view cho trang chủ
 def index(request):
@@ -115,6 +119,80 @@ def uploadFile_algorithms(request):
     return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels': listlabels, 'listdatas': listdatas})
 
 
+def predict_data(request, *args, **kwargs):
+    context = {}
+    if request.method == 'POST':
+        if request.method == 'POST':
+
+            uploaded_file = request.FILES['document']
+            attribute1 = request.POST.get('attribute1')
+            attribute2 = request.POST.get('attribute2')
+
+            if uploaded_file.name.endswith('csv'):
+                uploaded_file = request.FILES['document']
+                CountryName = request.POST.get('attribute1')
+                fromYear = request.POST.get('from')
+                toYear = request.POST.get('to')
+                prediction = request.POST.get('prediction')
+                if uploaded_file.name.endswith('csv'):
+                    savefile = FileSystemStorage()
+                    name = savefile.save(uploaded_file.name, uploaded_file)
+                    file_directory = os.path.join(settings.MEDIA_ROOT, name)
+
+                    readPredict(file_directory)
+                    extract_data(CountryName, fromYear, toYear)
+
+                    #scaling data
+                    scaler_X = StandardScaler()
+                    scaler_y = StandardScaler()
+
+
+                    X_scaled = scaler_X.fit_transform(X)
+                    y_scaled = scaler_y.fit_transform(y)
+
+
+                    #setup and train model
+                    lin_model = LinearRegressionCustom(iterations=1000, learning_rate=0.01)
+                    lin_model.fit(X_scaled, y_scaled)
+
+                    # get scaling Predictions
+                    train_predictions_scaled = lin_model.predict(X_scaled)
+
+                    #back to original scale
+                    train_predictions = scaler_y.inverse_transform(train_predictions_scaled)
+
+                    # Scale the new input feature
+                    scaled_new_year = scaler_X.transform([[prediction]])
+
+                    # Predict the scaled output
+                    scaled_prediction = lin_model.predict(scaled_new_year)
+
+                    # Inverse transform to get the prediction in the original scale
+                    predicted_population = scaler_y.inverse_transform(scaled_prediction)
+
+                    print(f"Predicted population for the year {prediction}: {predicted_population[0, 0]}")
+                    context['predicted_population'] = np.round(predicted_population[0, 0])
+                    # if(os.path.join(settings.PLOT_ROOT, 'plot.png')):
+                    #     os.remove(os.path.join(settings.PLOT_ROOT, 'plot.png'))
+                    plot_filename = generatePlot(X, y, train_predictions)
+                    context['plot_filename'] = 'plot.png'
+                else:
+                    context['plot_filename'] = None
+            else:
+                messages.warning(request, 'File was not uploaded, please use a CSV file extension')
+
+    return render(request, "dashboard/predict_data.html", context)
+
+def generatePlot(X, y, train_predictions):
+    plt.clf()
+    plt.style.use("fivethirtyeight")
+    plt.scatter(X, y, color='black', label='Actual data')
+    plt.plot(X, train_predictions, color='blue', linewidth=3, label='Regression line')
+    print( np.round(train_predictions.ravel()))
+    plot_filename = os.path.join(settings.PLOT_ROOT, 'plot.png')
+    plt.savefig(plot_filename)
+    return plot_filename
+
 # Hàm đọc dữ liệu từ tệp CSV và lưu vào biến toàn cục `data`
 def readfile(filename):
     global data
@@ -122,8 +200,26 @@ def readfile(filename):
     data = pd.DataFrame(data=my_file, index=None)
     print(data)
 
+def readPredict(filename):
+    global df
+    df = pd.read_csv(filename)
 
+def extract_data(CountryName, fromYear, toYear):
+    global train_data, X, y
+    populations = df.loc[df['Country Name'] == CountryName, fromYear:toYear].values.flatten()
+    years = df.loc[df['Country Name'] == CountryName, fromYear:toYear].columns.tolist()
+    train_data = {
+        "Population": populations,
+        "Year": years
+    }
+    train_data = pd.DataFrame(train_data)
+    print(train_data)
+    train_data['Year'] = pd.to_numeric(train_data['Year'], errors='coerce')
+    X = train_data['Year'].values.reshape(-1, 1)
+    y = train_data['Population'].values.reshape(-1, 1)
 
+    print(X)
+    print(y)
 
 # Hàm xử lý dữ liệu từ DataFrame và trả về danh sách nhãn và dữ liệu
 
@@ -496,4 +592,46 @@ def processSort(data):
     listlabels, listdatas = prepare_chart_data(attr1, attr2)
 
     return listlabels, listdatas
+
+class LinearRegressionCustom():
+    def __init__(self, learning_rate, iterations):
+        self.learning_rate = learning_rate
+        self.iterations = iterations
+
+    # Function for model training
+    def fit(self, X, Y):
+        # no_of_training_examples, no_of_features
+        self.m, self.n = X.shape
+
+        # weight initialization
+        self.W = np.zeros(self.n)
+        self.b = 0
+        self.X = X
+        self.Y = Y
+        # print(X.shape)
+        # print(Y.shape)
+        # gradient descent learning
+        for i in range(self.iterations):
+            self.update_weights()
+
+        return self
+
+    # Helper function to update weights in gradient descent
+    def update_weights(self):
+        Y_pred = self.predict(self.X)
+
+        # calculate gradients
+        dW = - (2 * (self.X.T).dot(self.Y - Y_pred)) / self.m
+        db = - 2 * np.sum(self.Y - Y_pred) / self.m
+        # print(dW.shape)
+        # update weights
+        self.W = self.W - self.learning_rate * dW
+        self.b = self.b - self.learning_rate * db
+
+        return self
+
+    # Hypothetical function h(x)
+    def predict(self, X):
+        return X.dot(self.W) + self.b
+
 

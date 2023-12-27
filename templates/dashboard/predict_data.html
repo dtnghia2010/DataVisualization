@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+{% extends 'partials/base.html' %}
+
+{% block title %}DATA PREDICTION{% endblock %}
+
+{% block content %}
+{% load static %}
+<html lang="en">
+<head>
+    <style>
+
+
+        .result-container {
+            text-align: center;
+            margin-top: 20px; /* Adjust the margin as needed */
+        }
+
+        /* Center the button horizontally */
+        .btn-container {
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .btn.upload {
+            background-color: #007BFF;  /* Change to blue color */
+            color: white;
+        }
+
+        .btn.upload:hover {
+            background-color: #0056b3;  /* Darker shade of blue on hover */
+        }
+
+        .btn.btn-predict {
+            background-color: #007BFF;  /* Change to blue color */
+            color: white;
+        }
+
+        .btn.btn-predict:hover {
+            background-color: #0056b3;  /* Darker shade of blue on hover */
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+    <div class="form-container">
+        <h1>Upload Your CSV File</h1>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="document" id="document" required="required">
+            <input type="text" name="attribute1" id="attributeid1" placeholder="Label" required="required" autocomplete="off">
+            <input type="text" name="from" id="from" placeholder="From" required="required" autocomplete="off">
+            <input type="text" name="to" id="to" placeholder="To" required="required" autocomplete="off">
+            <input type="text" name="prediction" id="prediction" placeholder="Prediction" required="required" autocomplete="off">
+            <button type="submit" class="btn upload">PREDICT DATA</button>
+            <div class="result-container">
+                <p>Predicted Result</p>
+                <input type="text" name="" id="Result" value="{{ predicted_population }}" required="required" readonly >
+            </div>
+            {% if plot_filename %}
+                <img src="{% static 'prediction/plot.png' %}" alt="Regression Plot">
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
+{% endblock %}
