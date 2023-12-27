@@ -232,56 +232,56 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Add_Data
 from .util import binary_search_range, quicksort
-
 def search_add_data(request):
     if request.method == 'POST':
         try:
-            # Get values from the form
+            # Lấy giá trị từ form
             value_a = int(request.POST.get('value_a'))
             value_b = int(request.POST.get('value_b'))
 
-            # Query and sort data from the Add_Data model
+            # Truy vấn và sắp xếp dữ liệu từ model Add_Data
             data_list = list(Add_Data.objects.values('country', 'population').order_by('population'))
 
-            # Use quicksort to sort data_list based on 'population'
+            # Sử dụng quicksort để sắp xếp data_list dựa trên 'population'
             quicksort(data_list, 0, len(data_list) - 1, attribute_index='population')
 
-            # Binary search for values in the specified range
+            # Tìm kiếm nhị phân giá trị trong khoảng xác định
             start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index='population')
 
             if start_index == -1:
-                return HttpResponse("No values found in the specified range.")
+                return HttpResponse("Không có giá trị nằm trong khoảng xác định.")
 
             end_index = start_index
             selected_data = []
 
-            # Collect data in the specified range into the selected_data list
+            # Thu thập dữ liệu trong khoảng xác định vào danh sách selected_data
             while end_index < len(data_list) and data_list[end_index]['population'] <= value_b:
                 selected_data.append(data_list[end_index])
                 end_index += 1
 
-            # Adjust the start_index to include all elements within the specified range
+            # Điều chỉnh start_index để bao gồm tất cả các phần tử trong khoảng xác định
             while start_index > 0 and data_list[start_index - 1]['population'] >= value_a:
                 start_index -= 1
                 selected_data.insert(0, data_list[start_index])
 
-            # Print country and population for each item in selected_data to the terminal
+            # In country và population cho từng phần tử trong selected_data ra terminal
             for item in selected_data:
                 print(f"Country: {item['country']}, Population: {item['population']}")
 
-            # Prepare data for the chart
+            # Chuẩn bị dữ liệu cho biểu đồ
             labels = [item['country'] for item in selected_data]
             datas = [item['population'] for item in selected_data]
 
-            # Render HTML response with the selected data
+            # Render HTML response với dữ liệu đã chọn
             return render(request, "dashboard/search_add_data.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data})
 
         except (ValueError, TypeError) as e:
-            # Handle invalid input values
-            return HttpResponse(f"Error: {e}")
+            # Xử lý khi giá trị nhập không hợp lệ
+            return HttpResponse(f"Lỗi: {e}")
 
-    # Render the form when the request is GET
+    # Render form khi request là GET
     return render(request, 'dashboard/search_add_data.html')
+
 
 
 
