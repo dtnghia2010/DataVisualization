@@ -124,8 +124,10 @@ def predict_data(request, *args, **kwargs):
                     scaler_X = StandardScaler()
                     scaler_y = StandardScaler()
 
+
                     X_scaled = scaler_X.fit_transform(X)
                     y_scaled = scaler_y.fit_transform(y)
+
 
                     #setup and train model
                     lin_model = LinearRegressionCustom(iterations=1000, learning_rate=0.01)
@@ -148,8 +150,8 @@ def predict_data(request, *args, **kwargs):
 
                     print(f"Predicted population for the year {prediction}: {predicted_population[0, 0]}")
                     context['predicted_population'] = np.round(predicted_population[0, 0])
-                    if(os.path.join(settings.PLOT_ROOT, 'plot.png')):
-                        os.remove(os.path.join(settings.PLOT_ROOT, 'plot.png'))
+                    # if(os.path.join(settings.PLOT_ROOT, 'plot.png')):
+                    #     os.remove(os.path.join(settings.PLOT_ROOT, 'plot.png'))
                     plot_filename = generatePlot(X, y, train_predictions)
                     context['plot_filename'] = 'plot.png'
                 else:
@@ -164,6 +166,7 @@ def generatePlot(X, y, train_predictions):
     plt.style.use("fivethirtyeight")
     plt.scatter(X, y, color='black', label='Actual data')
     plt.plot(X, train_predictions, color='blue', linewidth=3, label='Regression line')
+    print( np.round(train_predictions.ravel()))
     plot_filename = os.path.join(settings.PLOT_ROOT, 'plot.png')
     plt.savefig(plot_filename)
     return plot_filename
@@ -192,6 +195,9 @@ def extract_data(CountryName, fromYear, toYear):
     train_data['Year'] = pd.to_numeric(train_data['Year'], errors='coerce')
     X = train_data['Year'].values.reshape(-1, 1)
     y = train_data['Population'].values.reshape(-1, 1)
+
+    print(X)
+    print(y)
 
 # Hàm xử lý dữ liệu từ DataFrame và trả về danh sách nhãn và dữ liệu
 
