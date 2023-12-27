@@ -266,23 +266,9 @@ def search_page_upload(request):
 
 
 
-# Trong views.py
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import Add_Data
-from .util import binary_search_range, quicksort
 
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import Add_Data
-from .util import binary_search_range, quicksort
 
-# Trong views.py
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import Add_Data
-from .util import binary_search_range, quicksort
-# Trong views.py
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Add_Data
@@ -341,16 +327,6 @@ def search_add_data(request):
 
 
 
-
-
-
-# Trong views.py
-
-
-
-# Trong views.py
-
-#
 #
 # from django.shortcuts import render
 # from .models import Upload_File
