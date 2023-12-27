@@ -172,47 +172,6 @@ def upload_sort(request):
 
 
 
-
-# def binary_search_range(arr, low, high, target_low, target_high, attribute_index):
-#     # Tìm kiếm nhị phân trong khoảng từ target_low đến target_high
-#     while low <= high:
-#         mid = (low + high) // 2
-#         mid_value = arr[mid][attribute_index]
-#
-#         if target_low <= mid_value <= target_high:
-#             return mid
-#         elif mid_value < target_low:
-#             low = mid + 1
-#         else:
-#             high = mid - 1
-#
-#     return -1  # Trả về -1 nếu không tìm thấy
-
-# def binary_search_range(arr, low, high, target_low, target_high, attribute_index):
-#     while low <= high:
-#         mid = (low + high) // 2
-#         mid_value = arr[mid][attribute_index]
-#
-#         print(f"Checking mid_value={mid_value} at index={mid}")
-#
-#         if target_low <= mid_value <= target_high:
-#             print("Found within the range.")
-#             return mid
-#         elif mid_value < target_low:
-#             print("Moving to the right.")
-#             low = mid + 1
-#         else:
-#             print("Moving to the left.")
-#             high = mid - 1
-#
-#     print("Value not found in the specified range.")
-#     return -1
-#
-
-
-# views.py
-
-
 import pandas as pd
 from django.shortcuts import render
 from django.http import HttpResponse
