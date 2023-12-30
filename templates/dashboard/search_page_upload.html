@@ -3,46 +3,93 @@
 {% block title %}SEARCH ALGORITHM{% endblock %}
 
 {% block content %}
-    <h1>SEARCH ALGORITHM</h1>
 
-    <p>Please enter values for a and b to search for Attribute 2 values within the range of a and b.</p>
+{% load static %}
 
-    <form method="POST">
-        {% csrf_token %}
-        <label for="value_a">Value a:</label>
-        <input type="text" name="value_a" id="value_a" required="required">
+<style>
 
-        <label for="value_b">Value b:</label>
-        <input type="text" name="value_b" id="value_b" required="required">
+    .txt{
+        font-size: 44px;
+        color: rgba(58.58, 61.92, 142.02, 0.90);
+        text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
 
-        <button type="submit">Search</button>
-    </form>
+    .box{
+        display: flex;
+		align-items: center;
+		justify-content: center;
+    }
 
-    {% if listlabels and listdatas %}
-        <!-- Display your chart here using listlabels and listdatas -->
-        <canvas id="myChart" width="400" height="400" class="mb-4"></canvas>
-        <script>
-            var ctx = document.getElementById('myChart').getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: {{ listlabels|safe }},
-                    datasets: [{
-                        label: 'Attribute 2',
-                        data: {{ listdatas|safe }},
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
+    .upload{
+        border: none;
+        font-size: 20px;
+        font-weight: 600;
+        color: black;
+        background: rgba(203, 204, 240, 1);
+        border-color: rgba(58.58, 61.92, 142.02, 0.90);
+        border-style: solid;
+        border-width: 2px;
+    }
+
+    .upload:hover {
+        background: rgba(58.58, 61.92, 142.02, 0.90);
+        color: white;
+    }
+
+</style>
+
+
+<div class="row MT-4 PT-4" style="background-color: rgba(216, 228, 248, 1)">
+    <div class="col-md-12 shadow">
+        <div class=class="row-md-2">
+            <h2 class="row-md-1 text-center txt p-4">Upload File Searching</h2>
+            <p class="text-center">Please enter values for a and b to search for the Attribute2 values within the range of 'a' and
+                'b'.</p>
+            <hr>
+            <div class="row-md-1 form-group box p-3">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="value_a">Value a:</label>
+                    <input type="text" name="value_a" id="value_a" required="required">
+
+                    <label for="value_b">Value b:</label>
+                    <input type="text" name="value_b" id="value_b" required="required">
+
+                    <button type="submit" class="btn upload ml-3">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if listlabels and listdatas %}
+<div style="margin-top: 50px">
+    <h2 class="mb-5"><i class='far fa-hand-point-right' style='font-size:25px'></i> Search Results:</h2>
+</div>
+<!-- Display your chart here using listlabels and listdatas -->
+<canvas id="myChart" width="400" height="400" class="mb-4"></canvas>
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ listlabels|safe }},
+            datasets: [{
+                label: 'Attribute 2',
+                data: {{ listdatas|safe }},
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
                 }
-            });
-        </script>
-    {% endif %}
+            }
+        }
+    });
+</script>
+{% endif %}
 {% endblock %}
