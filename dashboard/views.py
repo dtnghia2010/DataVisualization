@@ -90,7 +90,6 @@ def upload_file(request):
     Upload_File.objects.all().delete()
 
     if request.method == 'POST':
-
         uploaded_file = request.FILES['document']
         attribute1 = request.POST.get('attribute1')
         attribute2 = request.POST.get('attribute2')
@@ -101,9 +100,16 @@ def upload_file(request):
 
             file_directory = os.path.join(settings.MEDIA_ROOT, name)
             readfile(file_directory)
+
+            # Check if attribute1 and attribute2 are valid
+            if attribute1 not in data.columns or attribute2 not in data.columns:
+                messages.warning(request, 'Please enter valid Attribute 1 and Attribute 2 present in the CSV file.')
+                return render(request, "dashboard/upload_file.html")
+
             return redirect(uploadFile_algorithms)
         else:
             messages.warning(request, 'File was not uploaded, please use a CSV file extension')
+
     return render(request, "dashboard/upload_file.html")
 
 
