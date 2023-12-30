@@ -34,7 +34,7 @@ Course: Algorithms & Data Structures
 <!-- TABLE OF CONTENTS -->
 # Table of contents :round_pushpin:
 1. [Introduction](#Introduction)
-2. [Techniques](#Techniques)
+2. [Tech stack](#Tech_stack)
 3. [Charts](#Charts)
 4. [Features](#Features)
 5. [Challenges](#Challenges)
@@ -106,21 +106,28 @@ Welcome to our first data visualization website! This is a platform designed to 
 
 | Order | Task                                  |  Person   | Contribution (%) |
 | :----: |:--------------------------------------:| :-------: | :----------: |
-| 1     | Search Argorithm, Visualize Add_data and Upload_file |  Ngô Thương  |     25      |
+| 1     | Search Algorithm, Visualize Add_data and Upload_file |  Ngô Thương  |     25      |
 | 2     |Linear Regression, Upload_file with CSV   | Trọng Nghĩa |      25      |
 | 3     | Interface, Delete Data          | Kỳ Phương |      25      |
-| 4     | Sort Argorithm, Rename Chart     | Anh Thắng  |      25      |
+| 4     | Sort Algorithm, Rename Chart     | Anh Thắng  |      25      |
 
 
 
 <br />
 
 
-## 2. Techniques <a name="Techniques"></a>:joystick:
-- Language: [Python](https://www.python.org/)
-- Framework: [Django](https://www.djangoproject.com/)
-- Web Dev: [HTML](https://www.w3schools.com/html/), [CSS](https://www.w3schools.com/css/), [Bootstrap](https://getbootstrap.com/)
-- Compiler: [PyCharm](https://www.jetbrains.com/pycharm/download/?section=windows)
+## 2. Tech stack <a name="Tech_stack"></a>:joystick:
+### :art:Front-end:
+  - Language: [Python](https://www.python.org/)
+  - Framework: [Django](https://www.djangoproject.com/)
+  - Web Dev: [HTML](https://www.w3schools.com/html/), [CSS](https://www.w3schools.com/css/), [Bootstrap](https://getbootstrap.com/)
+  - Compiler: [PyCharm](https://www.jetbrains.com/pycharm/download/?section=windows)
+
+    
+### :hammer_and_wrench:Back-end:
+  - Language: [Python](https://www.python.org/)
+  - Framework: [Django](https://www.djangoproject.com/)
+  - Compiler: [PyCharm](https://www.jetbrains.com/pycharm/download/?section=windows)
 <br />
 
 
@@ -158,9 +165,10 @@ Welcome to our first data visualization website! This is a platform designed to 
 
 
 ## 4. Features <a name="Features"></a>:robot:
-We have 2 main parts divided specifically: Add Data & Upload File. In each part, we use some features like algorithms to express them. Furthermore, we have developed one more extra feature, which is Linear Regression Algorithms.
+We have 2 main parts divided specifically: Add Data & Upload File. In each part, we use some features like algorithms to express them. Furthermore, we have developed one more extra feature, which is Linear Regression Algorithms - Prediction Data.
 
-![add_upload](https://github.com/dtnghia2010/DataVisualization/assets/126145844/77d4e2c0-96fe-4402-a849-dcc6d6785d97)
+![add_upload](https://github.com/dtnghia2010/DataVisualization/assets/126145844/0f5298df-fbfd-4cd1-89b2-ce19ac653bc9)
+
 <br />
 
 
@@ -193,12 +201,14 @@ Linear Regression is a supervised learning algorithm which is both a Statistical
 Similar to the Upload File section, we also need to input a file with the extension '.csv', so that the data can be converted to chart form using 'matplotlib'.
 - First, we provide a file 'testData.csv' - containing population data of countries around the world; next, enter the values ​​'Brazil', '2014', '2022', '2023' into the blanks such as Label, From, To, Prediction, respectively:
   
-  ![input_predict](https://github.com/dtnghia2010/DataVisualization/assets/126145844/2366376a-265f-4571-a079-02b274c38f7b)
+  ![input_predict](https://github.com/dtnghia2010/DataVisualization/assets/126145844/d9344a31-eb9d-410e-bbcc-76c59b894e61)
+
 
 
 - Then, we will have a result like this:
 
-  ![predict](https://github.com/dtnghia2010/DataVisualization/assets/126145844/e6f541fa-c616-4430-bc57-63d23b20ca71)
+  ![predict](https://github.com/dtnghia2010/DataVisualization/assets/126145844/e23605f3-c93f-44fa-bf36-dbe8d529d422)
+
 <br />
 
 
