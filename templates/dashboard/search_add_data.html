@@ -5,48 +5,71 @@
 {% block content %}
     <h1>SEARCH ADD DATA</h1>
 
-    <p>Please enter values for 'a' and 'b' to search for Population values within the range of 'a' and 'b.'</p>
+    {% if error_message %}
+        <p style="font-weight: bold; font-size: 1.5em;">SEARCH RESULT</p>
+        <p style="font-size: 1.5em;">{{ error_message }}</p>
+    {% else %}
+        <p>Please enter values for 'a' and 'b' to search for Population values within the range of 'a' and 'b.'</p>
 
-    <form method="POST">
-        {% csrf_token %}
-        <label for="value_a">Value a:</label>
-        <input type="text" name="value_a" id="value_a" required="required">
+        <form method="POST" id="searchForm">
+            {% csrf_token %}
+            <label for="value_a">Value a:</label>
+            <input type="text" name="value_a" id="value_a" required="required" {% if value_a %}value="{{ value_a }}"{% endif %}>
 
-        <label for="value_b">Value b:</label>
-        <input type="text" name="value_b" id="value_b" required="required">
+            <label for="value_b">Value b:</label>
+            <input type="text" name="value_b" id="value_b" required="required" {% if value_b %}value="{{ value_b }}"{% endif %}>
 
-        <button type="submit">Search</button>
-    </form>
+            <button type="button" onclick="submitForm()">Search</button>
+        </form>
 
-    {% if listlabels and listdatas %}
-        <h2>Search Results:</h2>
-        <div style="margin-top: 20px;">
-            <!-- Display your chart here using listlabels and listdatas -->
-            <canvas id="myChart" width="400" height="400"></canvas>
-        </div>
+        {% if listlabels and listdatas %}
+            {% if show_chart %}
+                <h2>Search Results:</h2>
+                <div style="margin-top: 20px;">
+                    <!-- Display your chart here using listlabels and listdatas -->
+                    <canvas id="myChart" width="400" height="400"></canvas>
+                </div>
 
-        <script>
-            var ctx = document.getElementById('myChart').getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: {{ listlabels|safe }},
-                    datasets: [{
-                        label: 'Population',
-                        data: {{ listdatas|safe }},
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+                <script>
+                    var ctx = document.getElementById('myChart').getContext('2d');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: {{ listlabels|safe }},
+                            datasets: [{
+                                label: 'Population',
+                                data: {{ listdatas|safe }},
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
                         }
-                    }
-                }
-            });
-        </script>
+                    });
+                </script>
+            {% else %}
+                <p style="font-weight: bold; font-size: 1.5em;">SEARCH RESULT</p>
+                <p style="font-size: 1.5em;">Please enter a value for 'a' less than 'b'.</p>
+            {% endif %}
+        {% endif %}
     {% endif %}
+
+    <script>
+        function submitForm() {
+            var a = document.getElementById('value_a').value;
+            var b = document.getElementById('value_b').value;
+
+            if (a >= b) {
+                alert("Please enter a value for 'a' less than 'b'.");
+            } else {
+                document.getElementById('searchForm').submit();
+            }
+        }
+    </script>
 {% endblock %}

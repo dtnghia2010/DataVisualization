@@ -326,7 +326,7 @@ from .util import quicksort, binary_search_range, partition
 
 def search_page_upload(request):
     # Initialize error_message with the default message
-    error_message = "Please enter a value for 'a' less than 'b'."
+    error_message = "Please enter a value for 'a' less than 'b.'"
 
     if request.method == 'POST':
         try:
@@ -336,7 +336,7 @@ def search_page_upload(request):
 
             # Kiểm tra nếu giá trị a lớn hơn hoặc bằng giá trị b
             if value_a >= value_b:
-                return render(request, 'dashboard/search_page_upload.html', {'error_message': error_message})
+                return render(request, 'dashboard/search_page_upload.html', {'error_message': error_message, 'value_a': value_a, 'value_b': value_b})
 
             # Truy vấn và sắp xếp dữ liệu từ cơ sở dữ liệu
             data_list = list(Upload_File.objects.values('attribute1', 'attribute2').order_by('attribute2'))
@@ -367,7 +367,7 @@ def search_page_upload(request):
                 print(f"Attribute1: {item['attribute1']}, Attribute2: {item['attribute2']}")
 
             # Render HTML response với dữ liệu đã chọn
-            return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data, 'error_message': error_message})
+            return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data, 'error_message': error_message, 'value_a': value_a, 'value_b': value_b})
 
         except (ValueError, TypeError) as e:
             # Xử lý giá trị nhập không hợp lệ
@@ -383,16 +383,21 @@ def search_page_upload(request):
 
 
 
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Add_Data
 from .util import binary_search_range, quicksort
+
 def search_add_data(request):
     if request.method == 'POST':
         try:
             # Lấy giá trị từ form
             value_a = int(request.POST.get('value_a'))
             value_b = int(request.POST.get('value_b'))
+
+            if value_a > value_b:
+                return render(request, "dashboard/search_add_data.html", {'error_message': "Please enter a value for 'a' less than 'b'", 'show_chart': False})
 
             # Truy vấn và sắp xếp dữ liệu từ model Add_Data
             data_list = list(Add_Data.objects.values('country', 'population').order_by('population'))
@@ -428,14 +433,15 @@ def search_add_data(request):
             datas = [item['population'] for item in selected_data]
 
             # Render HTML response với dữ liệu đã chọn
-            return render(request, "dashboard/search_add_data.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data})
+            return render(request, "dashboard/search_add_data.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data, 'show_chart': True})
 
         except (ValueError, TypeError) as e:
             # Xử lý khi giá trị nhập không hợp lệ
-            return HttpResponse(f"Lỗi: {e}")
+            return render(request, "dashboard/search_add_data.html", {'error_message': f"Lỗi: {e}", 'show_chart': False})
 
     # Render form khi request là GET
-    return render(request, 'dashboard/search_add_data.html')
+    return render(request, 'dashboard/search_add_data.html', {'show_chart': False})
+
 
 
 def processingUpload(request):
