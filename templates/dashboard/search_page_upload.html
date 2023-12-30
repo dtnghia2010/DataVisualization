@@ -5,6 +5,8 @@
 {% block content %}
     <h1>SEARCH ALGORITHM</h1>
 
+    <p>{{ error_message }}</p>
+
     <p>Please enter values for a and b to search for Attribute 2 values within the range of a and b.</p>
 
     <form method="POST">
@@ -19,6 +21,8 @@
     </form>
 
     {% if listlabels and listdatas %}
+        <p style="font-weight: bold; font-size: 1.5em;">SEARCH RESULT</p> <!-- Adjust font-weight and font-size as needed -->
+
         <!-- Display your chart here using listlabels and listdatas -->
         <canvas id="myChart" width="400" height="400" class="mb-4"></canvas>
         <script>

@@ -319,15 +319,24 @@ def partition_(array, low, high):
 
 
 import pandas as pd
+from django.http import HttpResponse
+from django.shortcuts import render
 from .models import Upload_File
-from .views import  prepare_chart_data
-from . util import quicksort, partition
+from .util import quicksort, binary_search_range, partition
+
 def search_page_upload(request):
+    # Initialize error_message with the default message
+    error_message = "Please enter a value for 'a' less than 'b'."
+
     if request.method == 'POST':
         try:
             # Lấy giá trị của 'value_a' và 'value_b' từ form
             value_a = int(request.POST.get('value_a'))
             value_b = int(request.POST.get('value_b'))
+
+            # Kiểm tra nếu giá trị a lớn hơn hoặc bằng giá trị b
+            if value_a >= value_b:
+                return render(request, 'dashboard/search_page_upload.html', {'error_message': error_message})
 
             # Truy vấn và sắp xếp dữ liệu từ cơ sở dữ liệu
             data_list = list(Upload_File.objects.values('attribute1', 'attribute2').order_by('attribute2'))
@@ -358,14 +367,16 @@ def search_page_upload(request):
                 print(f"Attribute1: {item['attribute1']}, Attribute2: {item['attribute2']}")
 
             # Render HTML response với dữ liệu đã chọn
-            return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data})
+            return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data, 'error_message': error_message})
 
         except (ValueError, TypeError) as e:
             # Xử lý giá trị nhập không hợp lệ
             return HttpResponse(f"Lỗi: {e}")
 
     # Render form khi request là GET
-    return render(request, 'dashboard/search_page_upload.html')
+    return render(request, 'dashboard/search_page_upload.html', {'error_message': error_message})
+
+
 
 
 
