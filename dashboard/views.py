@@ -39,12 +39,17 @@ def add_data(request):
     if request.method == 'POST':
         form = Add_DataFrom(request.POST)
         if form.is_valid():
-            new_data = form.save()
-            new_data.refresh_from_db()
+            country = form.cleaned_data.get('country')
+
+            if Add_Data.objects.filter(country=country).exists():
+                messages.error(request, "Data for this country already exists. Please enter different data.")
+            else:
+              new_data = form.save()
+              new_data.refresh_from_db()
 
             # Thực hiện các bước vẽ biểu đồ với dữ liệu mới
-            data_for_chart = Add_Data.objects.all()
-            return redirect(addData_algorithms)
+              data_for_chart = Add_Data.objects.all()
+              return redirect(addData_algorithms)
     else:
         form = Add_DataFrom()
 
@@ -90,7 +95,6 @@ def upload_file(request):
     Upload_File.objects.all().delete()
 
     if request.method == 'POST':
-
         uploaded_file = request.FILES['document']
         attribute1 = request.POST.get('attribute1')
         attribute2 = request.POST.get('attribute2')
@@ -101,9 +105,16 @@ def upload_file(request):
 
             file_directory = os.path.join(settings.MEDIA_ROOT, name)
             readfile(file_directory)
+
+            # Check if attribute1 and attribute2 are valid
+            if attribute1 not in data.columns or attribute2 not in data.columns:
+                messages.warning(request, 'Please enter valid Attribute 1 and Attribute 2 present in the CSV file.')
+                return render(request, "dashboard/upload_file.html")
+
             return redirect(uploadFile_algorithms)
         else:
             messages.warning(request, 'File was not uploaded, please use a CSV file extension')
+
     return render(request, "dashboard/upload_file.html")
 
 
@@ -284,44 +295,30 @@ def partition_(array, low, high):
 
 
 
-# def upload_sort(request):
-#     # Lấy dữ liệu từ database
-#     data_upload_file = Upload_File.objects.all()
-#
-#     # Chuyển dữ liệu thành danh sách để sử dụng trong thuật toán quicksort
-#     data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
-#
-#     # Kiểm tra xem data_list có giữ nguyên dữ liệu hay không
-#     if data_list:
-#         # Thực hiện Quick Sort
-#         quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
-#
-#         # Chuẩn bị dữ liệu cho biểu đồ
-#         labels, datas = zip(*data_list)
-#
-#         # In ra giá trị của labels và datas
-#         print("Labels:", labels)
-#         print("Datas:", datas)
-#     else:
-#         # Xử lý trường hợp khi data_list rỗng
-#         labels, datas = [], []
-#
-#     # Render template với dữ liệu đã sắp xếp
-#     return render(request, "dashboard/upload_sort.html", {'listlabels': labels, 'listdatas': datas})
-#
 
 
 
 import pandas as pd
+from django.http import HttpResponse
+from django.shortcuts import render
 from .models import Upload_File
-from .views import  prepare_chart_data
-from . util import quicksort, partition
+from .util import quicksort, binary_search_range, partition
+
 def search_page_upload(request):
+    # Initialize error_message with the default message
+    error_message = "Please enter a value for 'a' less than 'b.'"
+    no_values_found = False  # Initialize the variable
+
     if request.method == 'POST':
         try:
             # Lấy giá trị của 'value_a' và 'value_b' từ form
             value_a = int(request.POST.get('value_a'))
             value_b = int(request.POST.get('value_b'))
+
+            # Kiểm tra nếu giá trị a lớn hơn hoặc bằng giá trị b
+            if value_a >= value_b:
+                return render(request, 'dashboard/search_page_upload.html',
+                              {'error_message': error_message, 'value_a': value_a, 'value_b': value_b})
 
             # Truy vấn và sắp xếp dữ liệu từ cơ sở dữ liệu
             data_list = list(Upload_File.objects.values('attribute1', 'attribute2').order_by('attribute2'))
@@ -333,7 +330,10 @@ def search_page_upload(request):
             start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index='attribute2')
 
             if start_index == -1:
-                return HttpResponse("Không tìm thấy giá trị trong khoảng xác định.")
+                no_values_found = True  # Set the variable to True
+                return render(request, "dashboard/search_page_upload.html",
+                              {'no_values_found': no_values_found, 'error_message': error_message, 'value_a': value_a,
+                               'value_b': value_b})
 
             end_index = start_index
             selected_data = []
@@ -352,14 +352,17 @@ def search_page_upload(request):
                 print(f"Attribute1: {item['attribute1']}, Attribute2: {item['attribute2']}")
 
             # Render HTML response với dữ liệu đã chọn
-            return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data})
+            return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data, 'error_message': error_message, 'value_a': value_a, 'value_b': value_b})
 
         except (ValueError, TypeError) as e:
             # Xử lý giá trị nhập không hợp lệ
             return HttpResponse(f"Lỗi: {e}")
 
     # Render form khi request là GET
-    return render(request, 'dashboard/search_page_upload.html')
+    return render(request, 'dashboard/search_page_upload.html', {'error_message': error_message})
+
+
+
 
 
 
@@ -370,12 +373,16 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Add_Data
 from .util import binary_search_range, quicksort
+
 def search_add_data(request):
     if request.method == 'POST':
         try:
             # Lấy giá trị từ form
             value_a = int(request.POST.get('value_a'))
             value_b = int(request.POST.get('value_b'))
+
+            if value_a > value_b:
+                return render(request, "dashboard/search_add_data.html", {'error_message': "Please enter a value for 'a' less than 'b'", 'show_chart': False})
 
             # Truy vấn và sắp xếp dữ liệu từ model Add_Data
             data_list = list(Add_Data.objects.values('country', 'population').order_by('population'))
@@ -387,7 +394,9 @@ def search_add_data(request):
             start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index='population')
 
             if start_index == -1:
-                return HttpResponse("Không có giá trị nằm trong khoảng xác định.")
+                no_values_message = f"No values found in the range from {value_a} to {value_b}."
+                return render(request, "dashboard/search_add_data.html",
+                              {'error_message': None, 'show_chart': False, 'no_values_message': no_values_message})
 
             end_index = start_index
             selected_data = []
@@ -411,14 +420,15 @@ def search_add_data(request):
             datas = [item['population'] for item in selected_data]
 
             # Render HTML response với dữ liệu đã chọn
-            return render(request, "dashboard/search_add_data.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data})
+            return render(request, "dashboard/search_add_data.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data, 'show_chart': True})
 
         except (ValueError, TypeError) as e:
             # Xử lý khi giá trị nhập không hợp lệ
-            return HttpResponse(f"Lỗi: {e}")
+            return render(request, "dashboard/search_add_data.html", {'error_message': f"Lỗi: {e}", 'show_chart': False})
 
     # Render form khi request là GET
-    return render(request, 'dashboard/search_add_data.html')
+    return render(request, 'dashboard/search_add_data.html', {'show_chart': False})
+
 
 
 def processingUpload(request):
