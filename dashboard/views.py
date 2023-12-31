@@ -141,13 +141,14 @@ def predict_data(request, *args, **kwargs):
                     name = savefile.save(uploaded_file.name, uploaded_file)
                     file_directory = os.path.join(settings.MEDIA_ROOT, name)
                     df = readPredict(file_directory)
+                    if CountryName not in df.columns:
+                        messages.warning(request, '"Label" was not found in the csv file\n')
+                        return render(request, "dashboard/predict_data.html", context)
+
                     if fromYear not in df.columns or toYear not in df.columns:
                         messages.warning(request, '"From" or "To" was not found in the csv file\n')
                         return render(request, "dashboard/predict_data.html", context)
                         # Check if 'Country Name' is a valid column in the DataFrame
-                    if 'Country Name' not in df.columns:
-                        messages.warning(request, '"Label" was not found in the csv file\n')
-                        return render(request, "dashboard/predict_data.html", context)
 
                     result = extract_data(CountryName, fromYear, toYear)
                     X = result['X']
