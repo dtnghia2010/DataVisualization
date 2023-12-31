@@ -39,12 +39,17 @@ def add_data(request):
     if request.method == 'POST':
         form = Add_DataFrom(request.POST)
         if form.is_valid():
-            new_data = form.save()
-            new_data.refresh_from_db()
+            country = form.cleaned_data.get('country')
+
+            if Add_Data.objects.filter(country=country).exists():
+                messages.error(request, "Data for this country already exists. Please enter different data.")
+            else:
+              new_data = form.save()
+              new_data.refresh_from_db()
 
             # Thực hiện các bước vẽ biểu đồ với dữ liệu mới
-            data_for_chart = Add_Data.objects.all()
-            return redirect(addData_algorithms)
+              data_for_chart = Add_Data.objects.all()
+              return redirect(addData_algorithms)
     else:
         form = Add_DataFrom()
 
