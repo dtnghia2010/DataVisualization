@@ -23,10 +23,5 @@ class Upload_FileForm(forms.ModelForm):
         fields = ['attribute1', 'attribute2']
 
 
-ALGORITHM_CHOICES = [
-    ('quicksort', 'quicksort'),
-]
-
-
-class sortingForm(forms.Form):
-    algorithm = forms.CharField(label='Selected algorithm', widget=forms.Select(choices=ALGORITHM_CHOICES))
+class nameChart(forms.Form):
+    name = forms.CharField(max_length=100)

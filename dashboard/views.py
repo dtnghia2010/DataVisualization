@@ -2,7 +2,7 @@ import matplotlib
 from django.core.checks import messages
 
 from .models import Add_Data, Upload_File
-from .forms import Add_DataFrom, sortingForm, DeleteForm_AddData
+from .forms import Add_DataFrom, DeleteForm_AddData, nameChart
 import os
 from collections import Counter
 from django.shortcuts import render, redirect
@@ -34,7 +34,6 @@ def add_data(request):
 
 
     data = Add_Data.objects.all()
-    formSort = sortingForm()
 
     if request.method == 'POST':
         form = Add_DataFrom(request.POST)
@@ -51,7 +50,6 @@ def add_data(request):
     context = {
         'data': data,
         'form': form,
-        'formSorting': sortingForm,
     }
 
     return render(request, 'dashboard/add_data.html', context)
@@ -83,17 +81,15 @@ def delete_add_data(request):
 
 # Hàm view cho việc tải lên tệp CSV và lưu trữ dữ liệu vào database
 def upload_file(request):
-    global attribute1, attribute2
-
+    global attribute1, attribute2, name
     listlabels, listdatas = None, None
-    formSorting = sortingForm()
     Upload_File.objects.all().delete()
-
+    name = nameChart()
     if request.method == 'POST':
-
         uploaded_file = request.FILES['document']
         attribute1 = request.POST.get('attribute1')
         attribute2 = request.POST.get('attribute2')
+        name =  nameChart()
 
         if uploaded_file.name.endswith('csv'):
             savefile = FileSystemStorage()
@@ -104,7 +100,7 @@ def upload_file(request):
             return redirect(uploadFile_algorithms)
         else:
             messages.warning(request, 'File was not uploaded, please use a CSV file extension')
-    return render(request, "dashboard/upload_file.html")
+    return render(request, "dashboard/upload_file.html", {"name": name})
 
 
 def uploadFile_algorithms(request):
@@ -116,7 +112,7 @@ def uploadFile_algorithms(request):
 
     labels, datas = process_data(attribute1, attribute2)
     listlabels, listdatas = prepare_chart_data(labels, datas)
-    return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels': listlabels, 'listdatas': listdatas})
+    return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels': listlabels, 'listdatas': listdatas, "name": name})
 
 
 def predict_data(request, *args, **kwargs):
@@ -280,37 +276,6 @@ def partition_(array, low, high):
 
     # Return the position from where partition is done
     return i + 1
-
-
-
-
-# def upload_sort(request):
-#     # Lấy dữ liệu từ database
-#     data_upload_file = Upload_File.objects.all()
-#
-#     # Chuyển dữ liệu thành danh sách để sử dụng trong thuật toán quicksort
-#     data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
-#
-#     # Kiểm tra xem data_list có giữ nguyên dữ liệu hay không
-#     if data_list:
-#         # Thực hiện Quick Sort
-#         quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
-#
-#         # Chuẩn bị dữ liệu cho biểu đồ
-#         labels, datas = zip(*data_list)
-#
-#         # In ra giá trị của labels và datas
-#         print("Labels:", labels)
-#         print("Datas:", datas)
-#     else:
-#         # Xử lý trường hợp khi data_list rỗng
-#         labels, datas = [], []
-#
-#     # Render template với dữ liệu đã sắp xếp
-#     return render(request, "dashboard/upload_sort.html", {'listlabels': labels, 'listdatas': datas})
-#
-
-
 
 import pandas as pd
 from .models import Upload_File
@@ -633,5 +598,3 @@ class LinearRegressionCustom():
     # Hypothetical function h(x)
     def predict(self, X):
         return X.dot(self.W) + self.b
-
-
