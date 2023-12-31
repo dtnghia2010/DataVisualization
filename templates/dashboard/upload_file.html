@@ -63,9 +63,9 @@
 
 <div class="media">
     <div class="media-body text-left pt-3" style="font-size: 20px">
-        <h1 class="text-left mt-5" >Upload your file to generate <br> the best products</h1>
+        <h1 class="text-left mt-5">Upload your file to generate <br> the best products</h1>
         <p style="position: absolute" class="text-right">
-        <i>You can choose a file with the .csv extension for more accurate data.</i>
+            <i>You can choose a file with the .csv extension for more accurate data.</i>
         </p>
     </div>
     <img style="width: 400px"
@@ -76,50 +76,36 @@
 <div class="container b1 shadow" style="background-image: url('static/images/bg.jpg')">
     <div class="col-md-12">
         <div class="p-5">
-        <h1 class="text-center mt-2 t1" > Please upload your CSV file </h1>
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="row content">
-                <div class="col pt-5"> <br>
-                    <input type="file" name="document" id="document" required="required">
-                </div>
-                <div class="col pt-3 mb-3 mt-4 label">
-                    <p id="id1">Label</p>
-                    <input type="text" name="attribute1" id="attributeid1" required="required">
-                </div>
-                <div class="col pt-3 mb-3 mt-4 data">
-                    <p id="id2">Data</p>
-                    <input type="text" name="attribute2" id="attributeid2" required="required">
-                </div>
+            <h1 class="text-center mt-2 t1"> Please upload your CSV file </h1>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row content">
+                    <div class="col pt-5"><br>
+                        <input type="file" name="document" id="document" required="required">
+                    </div>
+                    <div class="col pt-3 mb-3 mt-4 label">
+                        <p id="id1">Label</p>
+                        <input type="text" name="attribute1" id="attributeid1" required="required">
+                    </div>
+                    <div class="col pt-3 mb-3 mt-4 data">
+                        <p id="id2">Data</p>
+                        <input type="text" name="attribute2" id="attributeid2" required="required">
+                    </div>
 
-                <div class="col pt-5"> <br>
-                    <button type="submit" class="btn upload">Upload</button>
+                    <div class="col pt-5"><br>
+                        <button type="submit" class="btn upload">Upload</button>
+                    </div>
                 </div>
-
-<!--                <div class="nav-item dropdown mt-3">-->
-<!--                    <a class="nav-link dropdown-toggle a1" href="#" role="button" data-toggle="dropdown" aria-expanded="false">-->
-<!--                      Algorithms-->
-<!--                    </a>-->
-<!--                    <div class="dropdown-menu">-->
-<!--                      <a class="dropdown-item" href="#">Sort</a>-->
-<!--                      <div class="dropdown-divider"></div>-->
-<!--                        <a class="dropdown-item" href="{% url 'search_page_upload' %}">Search</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-            </div>
-        </form>
+            </form>
         </div>
-
-        {% block messages %}
-            {% if messages %}
-                {% for message in messages %}
-                    {{ message }}
-                {% endfor %}
-            {% endif %}
-        {% endblock %}
     </div>
 </div>
-
+{% block messages %}
+{% if messages %}
+{% for message in messages %}
+{{ message }}
+{% endfor %}
+{% endif %}
+{% endblock %}
 {% endblock %}
 
