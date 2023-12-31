@@ -222,11 +222,11 @@ def extract_data(CountryName, fromYear, toYear):
 def process_data(attribute1, attribute2):
     labels = []
     datas = []
-    for x in data[attribute1]:  # name
-        labels.append(x)
+    for x_data in data[attribute1]:  # name
+        labels.append(x_data)
 
-    for y in data[attribute2]:  # price
-        datas.append(y)
+    for y_data in data[attribute2]:  # price
+        datas.append(y_data)
 
     return labels, datas
 
@@ -387,158 +387,17 @@ def search_add_data(request):
 
 
 def processingUpload(request):
-    # if request.method == 'POST':
-    #     form = sortingForm(request.POST)
-    #
-    #     if form.is_valid():
-    #         algorithm = request.POST['algorithm']
-
-            data = Upload_File.objects.values('attribute2').values_list('attribute2','attribute1')
-            listlabels, listdatas = processSort(data)
+            data_toSort = Upload_File.objects.values('attribute2').values_list('attribute2','attribute1')
+            listlabels, listdatas = processSort(data_toSort)
             return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels':listlabels, 'listdatas':listdatas})
 
-
-
-
-#
-# from django.shortcuts import render
-# from .models import Upload_File
-# from .views import quicksort, partition, prepare_chart_data
-#
-# def upload_sort_and_print(request):
-#     # Lấy dữ liệu từ database
-#     data_upload_file = Upload_File.objects.all()
-#
-#     # Chuyển dữ liệu thành danh sách để sử dụng trong thuật toán quicksort
-#     data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
-#
-#     # Kiểm tra xem data_list có giữ nguyên dữ liệu hay không
-#     if data_list:
-#         # Thực hiện Quick Sort
-#         quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
-#
-#         # In ra giá trị của attribute1 và attribute2
-#         print("Danh sách đã sắp xếp:")
-#         for item in data_list:
-#             print(f"Attribute1: {item[0]}, Attribute2: {item[1]}")
-#
-#         # Chuẩn bị dữ liệu cho biểu đồ (nếu cần)
-#         labels, datas = prepare_chart_data(*zip(*data_list))
-#
-#         # Trả về danh sách đã sắp xếp để sử dụng cho binary search
-#         return data_list
-#     else:
-#         # Xử lý trường hợp khi data_list rỗng
-#         print("Dữ liệu rỗng.")
-#         return []
-# sorted_data_list = upload_sort_and_print(request)
-
-
-
-
-
-
-
-
-
-# Import necessary libraries and modules
-
-# def search_page_upload(request):
-#     if request.method == 'POST':
-#         try:
-#             value_a = float(request.POST.get('value_a'))
-#             value_b = float(request.POST.get('value_b'))
-#
-#             # Retrieve and sort data from the database
-#             data_upload_file = Upload_File.objects.all()
-#             data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
-#             quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
-#
-#             # Binary search for values within the specified range
-#             start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index=0)
-#
-#             if start_index == -1:
-#                 return HttpResponse("No values found in the specified range.")
-#
-#             end_index = start_index
-#             while end_index < len(data_list) and data_list[end_index][0] <= value_b:
-#                 end_index += 1
-#
-#             # Prepare data for chart
-#             labels, datas = prepare_chart_data(*zip(*data_list[start_index:end_index]))
-#
-#             return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas})
-#
-#         except (ValueError, TypeError) as e:
-#             # Handle invalid input values
-#             return HttpResponse(f"Error: {e}")
-#
-#     return render(request, 'dashboard/search_page_upload.html')
-
-
-# def upload_file(request, *args, **kwargs):
-#     global attribute1, attribute2
-#     context = {}
-#     listlabels, listdatas = None, None
-#
-#     if request.method == 'POST':
-#         uploaded_file = request.FILES['document']
-#         attribute1 = request.POST.get('attribute1')
-#         attribute2 = request.POST.get('attribute2')
-#
-#         if uploaded_file.name.endswith('csv'):
-#             savefile = FileSystemStorage()
-#             name = savefile.save(uploaded_file.name, uploaded_file)
-#
-#             file_directory = os.path.join(settings.MEDIA_ROOT, name)
-#             readfile(file_directory)
-#
-#             labels, datas = process_data(attribute1, attribute2)
-#             listlabels, listdatas = prepare_chart_data(labels, datas)
-#
-#         else:
-#             messages.warning(request, 'File was not uploaded, please use a CSV file extension')
-#
-#     return render(request, "dashboard/upload_file.html", {'listlabels': listlabels, 'listdatas': listdatas})
-
-
-#     form = UploadFileForm(request.POST, request.FILES)
-#     if form.is_valid():
-#         uploaded_file = form.save(commit=False)
-#
-#         # Đọc dữ liệu từ file CSV
-#         csv_data = read_csv(uploaded_file.file.path)
-#
-#         # Lưu trữ dữ liệu vào cơ sở dữ liệu
-#         for row in csv_data:
-#             # Tạo một bản ghi mới cho mỗi dòng trong CSV
-#             new_record = CountryData(attribute1=uploaded_file.attribute1, attribute2=uploaded_file.attribute2, country=row[0], population=row[1])
-#             new_record.save()
-#
-#         uploaded_file.save()
-#
-#         return redirect('upload_file')
-# else:
-#     form = UploadFileForm()
-#
-# uploaded_files = UploadedFile.objects.all()
-
-# return render(request, 'dashboard/upload_file.html')
-
-
 def processingAdd(request):
-    # if request.method == 'POST':
-    #     form = sortingForm(request.POST)
-
-        # if form.is_valid():
-        #     algorithm = request.POST['algorithm']
-
-            data = Add_Data.objects.values('population').values_list('population','country')
-            listlabels, listdatas = processSort(data)
+            data_toSort = Add_Data.objects.values('population').values_list('population','country')
+            listlabels, listdatas = processSort(data_toSort)
             return render(request, 'dashboard/upload_sort.html', {'listlabels':listlabels, 'listdatas':listdatas})
 
-def processSort(data):
-    data_Dict = dict(data)
+def processSort(data_toSort):
+    data_Dict = dict(data_toSort)
 
     print(data_Dict)
 
