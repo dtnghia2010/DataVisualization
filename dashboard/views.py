@@ -290,31 +290,6 @@ def partition_(array, low, high):
 
 
 
-# def upload_sort(request):
-#     # Lấy dữ liệu từ database
-#     data_upload_file = Upload_File.objects.all()
-#
-#     # Chuyển dữ liệu thành danh sách để sử dụng trong thuật toán quicksort
-#     data_list = [(item.attribute2, item.attribute1) for item in data_upload_file]
-#
-#     # Kiểm tra xem data_list có giữ nguyên dữ liệu hay không
-#     if data_list:
-#         # Thực hiện Quick Sort
-#         quicksort(data_list, 0, len(data_list) - 1, attribute_index=0)
-#
-#         # Chuẩn bị dữ liệu cho biểu đồ
-#         labels, datas = zip(*data_list)
-#
-#         # In ra giá trị của labels và datas
-#         print("Labels:", labels)
-#         print("Datas:", datas)
-#     else:
-#         # Xử lý trường hợp khi data_list rỗng
-#         labels, datas = [], []
-#
-#     # Render template với dữ liệu đã sắp xếp
-#     return render(request, "dashboard/upload_sort.html", {'listlabels': labels, 'listdatas': datas})
-#
 
 
 
