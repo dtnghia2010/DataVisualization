@@ -104,6 +104,13 @@
             </div>
         </div>
     </div>
+            {% block messages %}
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+        {% endblock %}
 </div>
 
 {% if plot_filename %}
