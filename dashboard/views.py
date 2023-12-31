@@ -327,6 +327,7 @@ from .util import quicksort, binary_search_range, partition
 def search_page_upload(request):
     # Initialize error_message with the default message
     error_message = "Please enter a value for 'a' less than 'b.'"
+    no_values_found = False  # Initialize the variable
 
     if request.method == 'POST':
         try:
@@ -336,7 +337,8 @@ def search_page_upload(request):
 
             # Kiểm tra nếu giá trị a lớn hơn hoặc bằng giá trị b
             if value_a >= value_b:
-                return render(request, 'dashboard/search_page_upload.html', {'error_message': error_message, 'value_a': value_a, 'value_b': value_b})
+                return render(request, 'dashboard/search_page_upload.html',
+                              {'error_message': error_message, 'value_a': value_a, 'value_b': value_b})
 
             # Truy vấn và sắp xếp dữ liệu từ cơ sở dữ liệu
             data_list = list(Upload_File.objects.values('attribute1', 'attribute2').order_by('attribute2'))
@@ -348,7 +350,10 @@ def search_page_upload(request):
             start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index='attribute2')
 
             if start_index == -1:
-                return HttpResponse("Không tìm thấy giá trị trong khoảng xác định.")
+                no_values_found = True  # Set the variable to True
+                return render(request, "dashboard/search_page_upload.html",
+                              {'no_values_found': no_values_found, 'error_message': error_message, 'value_a': value_a,
+                               'value_b': value_b})
 
             end_index = start_index
             selected_data = []
@@ -409,7 +414,9 @@ def search_add_data(request):
             start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index='population')
 
             if start_index == -1:
-                return HttpResponse("Không có giá trị nằm trong khoảng xác định.")
+                no_values_message = f"No values found in the range from {value_a} to {value_b}."
+                return render(request, "dashboard/search_add_data.html",
+                              {'error_message': None, 'show_chart': False, 'no_values_message': no_values_message})
 
             end_index = start_index
             selected_data = []

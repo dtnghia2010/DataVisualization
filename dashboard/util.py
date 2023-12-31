@@ -5,9 +5,7 @@ def binary_search_range(arr, low, high, target_low, target_high, attribute_index
     while low <= high:
         mid = (low + high) // 2
         mid_value = arr[mid][attribute_index]
-
         print(f"Checking mid_value={mid_value} at index={mid}")
-
         if target_low <= mid_value <= target_high:
             print("Found within the range.")
             return mid
@@ -17,7 +15,6 @@ def binary_search_range(arr, low, high, target_low, target_high, attribute_index
         else:
             print("Moving to the left.")
             high = mid - 1
-
     print("Value not found in the specified range.")
     return -1
 

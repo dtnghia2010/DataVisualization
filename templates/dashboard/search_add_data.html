@@ -22,6 +22,10 @@
             <button type="button" onclick="submitForm()">Search</button>
         </form>
 
+        {% if no_values_message %}
+            <p style="font-size: 1.5em; color: red;">{{ no_values_message }}</p>
+        {% endif %}
+
         {% if listlabels and listdatas %}
             {% if show_chart %}
                 <h2>Search Results:</h2>

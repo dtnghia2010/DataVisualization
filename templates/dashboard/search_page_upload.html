@@ -24,7 +24,7 @@
         <button type="submit">Search</button>
     </form>
 
-    {% if listlabels and listdatas %}
+    {% if listlabels and listdatas and not no_values_found %}
         <p style="font-weight: bold; font-size: 1.5em;">SEARCH RESULT</p> <!-- Adjust font-weight and font-size as needed -->
 
         <!-- Display your chart here using listlabels and listdatas -->
@@ -52,6 +52,8 @@
                 }
             });
         </script>
+    {% elif no_values_found %}
+        <p>No values found in the range from {{ value_a }} to {{ value_b }}.</p>
     {% endif %}
 
     <script>
