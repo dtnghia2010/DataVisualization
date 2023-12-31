@@ -58,6 +58,13 @@
          alt="Generic placeholder image">
 </div>
 
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
 <div class="row MT-4 PT-4 b1" style="background-image: url('static/images/bg.jpg')">
     <div class="col-md-12 shadow">
         <div class=class="row-md-2">
@@ -69,9 +76,7 @@
                     {{ form }}
                     <hr>
                     <input class="btn but1 " type="submit" value="Add">
-                    
                 </form>
-
             </div>
         </div>
     </div>
