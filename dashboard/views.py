@@ -4,7 +4,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from .util import binary_search_range, quicksort, LinearRegressionCustom, readPredict, extract_data, generatePlot, partition
+from .util import binary_search_range, quicksort, LinearRegressionCustom, readPredict, extract_data, generatePlot, \
+    partition
 from .models import Upload_File
 from django.http import HttpResponse
 from .models import Add_Data
@@ -38,12 +39,12 @@ def add_data(request):
             if Add_Data.objects.filter(country=country).exists():
                 messages.error(request, "Data for this country already exists. Please enter different data.")
             else:
-              new_data = form.save()
-              new_data.refresh_from_db()
+                new_data = form.save()
+                new_data.refresh_from_db()
 
-            # Thực hiện các bước vẽ biểu đồ với dữ liệu mới
-              data_for_chart = Add_Data.objects.all()
-              return redirect(addData_algorithms)
+                # Thực hiện các bước vẽ biểu đồ với dữ liệu mới
+                data_for_chart = Add_Data.objects.all()
+                return redirect(addData_algorithms)
     else:
         form = Add_DataFrom()
 
@@ -141,14 +142,17 @@ def predict_data(request, *args, **kwargs):
                     name = savefile.save(uploaded_file.name, uploaded_file)
                     file_directory = os.path.join(settings.MEDIA_ROOT, name)
                     df = readPredict(file_directory)
-                    if CountryName not in df.columns:
-                        messages.warning(request, '"Label" was not found in the csv file\n')
-                        return render(request, "dashboard/predict_data.html", context)
 
                     if fromYear not in df.columns or toYear not in df.columns:
                         messages.warning(request, '"From" or "To" was not found in the csv file\n')
                         return render(request, "dashboard/predict_data.html", context)
-                        # Check if 'Country Name' is a valid column in the DataFrame
+                    #check if CountryName present in the csv file
+                    is_country_present = any(df[col].eq(CountryName).any() for col in df.columns)
+                    if not is_country_present:
+                        messages.warning(request, f'"{CountryName}" was not found in the csv file\n')
+                        return render(request, "dashboard/predict_data.html", context)
+
+                    # Check if 'Country Name' is a valid column in the DataFrame
 
                     result = extract_data(CountryName, fromYear, toYear)
                     X = result['X']
@@ -247,7 +251,6 @@ def partition_(array, low, high):
     return i + 1
 
 
-
 def search_page_upload(request):
     # Initialize error_message with the default message
     error_message = "Please enter a value for 'a' less than 'b.'"
@@ -271,7 +274,8 @@ def search_page_upload(request):
             quicksort(data_list, 0, len(data_list) - 1, attribute_index='attribute2')
 
             # Tìm kiếm nhị phân giá trị trong khoảng xác định
-            start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index='attribute2')
+            start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b,
+                                              attribute_index='attribute2')
 
             if start_index == -1:
                 no_values_found = True  # Set the variable to True
@@ -296,7 +300,9 @@ def search_page_upload(request):
                 print(f"Attribute1: {item['attribute1']}, Attribute2: {item['attribute2']}")
 
             # Render HTML response với dữ liệu đã chọn
-            return render(request, "dashboard/search_page_upload.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data, 'error_message': error_message, 'value_a': value_a, 'value_b': value_b})
+            return render(request, "dashboard/search_page_upload.html",
+                          {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data,
+                           'error_message': error_message, 'value_a': value_a, 'value_b': value_b})
 
         except (ValueError, TypeError) as e:
             # Xử lý giá trị nhập không hợp lệ
@@ -304,11 +310,6 @@ def search_page_upload(request):
 
     # Render form khi request là GET
     return render(request, 'dashboard/search_page_upload.html', {'error_message': error_message})
-
-
-
-
-
 
 
 def search_add_data(request):
@@ -319,7 +320,8 @@ def search_add_data(request):
             value_b = int(request.POST.get('value_b'))
 
             if value_a > value_b:
-                return render(request, "dashboard/search_add_data.html", {'error_message': "Please enter a value for 'a' less than 'b'", 'show_chart': False})
+                return render(request, "dashboard/search_add_data.html",
+                              {'error_message': "Please enter a value for 'a' less than 'b'", 'show_chart': False})
 
             # Truy vấn và sắp xếp dữ liệu từ model Add_Data
             data_list = list(Add_Data.objects.values('country', 'population').order_by('population'))
@@ -328,7 +330,8 @@ def search_add_data(request):
             quicksort(data_list, 0, len(data_list) - 1, attribute_index='population')
 
             # Tìm kiếm nhị phân giá trị trong khoảng xác định
-            start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b, attribute_index='population')
+            start_index = binary_search_range(data_list, 0, len(data_list) - 1, value_a, value_b,
+                                              attribute_index='population')
 
             if start_index == -1:
                 no_values_message = f"No values found in the range from {value_a} to {value_b}."
@@ -357,15 +360,17 @@ def search_add_data(request):
             datas = [item['population'] for item in selected_data]
 
             # Render HTML response với dữ liệu đã chọn
-            return render(request, "dashboard/search_add_data.html", {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data, 'show_chart': True})
+            return render(request, "dashboard/search_add_data.html",
+                          {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data,
+                           'show_chart': True})
 
         except (ValueError, TypeError) as e:
             # Xử lý khi giá trị nhập không hợp lệ
-            return render(request, "dashboard/search_add_data.html", {'error_message': f"Lỗi: {e}", 'show_chart': False})
+            return render(request, "dashboard/search_add_data.html",
+                          {'error_message': f"Lỗi: {e}", 'show_chart': False})
 
     # Render form khi request là GET
     return render(request, 'dashboard/search_add_data.html', {'show_chart': False})
-
 
 
 def processingUpload(request):
@@ -378,6 +383,7 @@ def processingAdd(request):
     data = Add_Data.objects.values('population').values_list('population', 'country')
     listlabels, listdatas = processSort(data)
     return render(request, 'dashboard/upload_sort.html', {'listlabels': listlabels, 'listdatas': listdatas})
+
 
 def processSort(data):
     data_Dict = dict(data)
