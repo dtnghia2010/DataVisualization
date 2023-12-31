@@ -36,20 +36,27 @@
         color: white;
     }
 
+
 </style>
 
-    {% if error_message %}
-        <div class="error-message">
-            <p>{{ error_message }}</p>
-        </div>
-    {% endif %}
+<!--    {% if error_message %}-->
+<!--        <div class="error-message">-->
+<!--            <p>{{ error_message }}</p>-->
+<!--        </div>-->
+<!--    {% endif %}-->
 
-    <p>Please enter values for a and b to search for Attribute 2 values within the range of a and b.</p>
-
-    <form method="POST">
-        {% csrf_token %}
-        <label for="value_a">Value a:</label>
-        <input type="text" name="value_a" id="value_a" required="required">
+<div class="row MT-4 PT-4" style="background-color: rgba(216, 228, 248, 1)">
+    <div class="col-md-12 shadow">
+        <div class=class="row-md-2">
+            <h2 class="row-md-1 text-center txt p-4">Upload File Searching</h2>
+            <p class="text-center">Please enter values for a and b to search for the Attribute2 values within the range of 'a' and
+                'b'.</p>
+            <hr>
+            <div class="row-md-1 form-group box p-3">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="value_a">Value a:</label>
+                    <input type="text" name="value_a" id="value_a" required="required">
 
                     <label for="value_b">Value b:</label>
                     <input type="text" name="value_b" id="value_b" required="required">
@@ -92,11 +99,9 @@
     {% elif no_values_found %}
         <p>No values found in the range from {{ value_a }} to {{ value_b }}.</p>
     {% endif %}
-
     <script>
         var a = "{{ value_a }}";
         var b = "{{ value_b }}";
-
         if (a >= b) {
             var errorMessage = document.createElement("div");
             errorMessage.className = "error-message";
