@@ -376,13 +376,13 @@ def search_add_data(request):
 def processingUpload(request):
     data = Upload_File.objects.values('attribute2').values_list('attribute2', 'attribute1')
     listlabels, listdatas = processSort(data)
-    return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels': listlabels, 'listdatas': listdatas})
+    return render(request, 'dashboard/upload_sort.html', {'listlabels': listlabels, 'listdatas': listdatas})
 
 
 def processingAdd(request):
     data = Add_Data.objects.values('population').values_list('population', 'country')
     listlabels, listdatas = processSort(data)
-    return render(request, 'dashboard/upload_sort.html', {'listlabels': listlabels, 'listdatas': listdatas})
+    return render(request, 'dashboard/addData_sort.html', {'listlabels': listlabels, 'listdatas': listdatas})
 
 
 def processSort(data):

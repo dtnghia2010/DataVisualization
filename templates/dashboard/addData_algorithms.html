@@ -35,7 +35,13 @@
         color: white;
     }
 
+    .back:hover{
+        text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
+    }
+
 </style>
+
+<a href="add_data"><i style='font-size:30px; color: rgba(58.58, 61.92, 142.02, 0.90)' class='far back'>&#xf359;</i></a>
 
 <div class="nav-item dropdown pb-5">
     <a class="nav-link dropdown-toggle text-center a1" href="#" role="button" data-toggle="dropdown"
@@ -101,5 +107,3 @@
 <a class="btn a2" href="{% url 'delete_add_data' %}">Delete</a>
 
 {% endblock %}
-
-<script></script>
