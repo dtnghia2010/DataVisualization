@@ -79,10 +79,15 @@ Welcome to our first data visualization website! This is a platform designed to 
    git checkout 'branch_name'
    ```
 5. Install Django Framework
-   ```sh
-   python -m pip install Django
-   ```
-6. Download some pakages of the project
+   - Windows:
+     ```sh
+     py -m pip install Django
+     ```
+   - Unix/MacOS:
+     ```sh
+     python -m pip install Django
+     ```
+7. Download some pakages of the project
    ```sh
    pip install pandas
    ```
@@ -171,8 +176,6 @@ We have 2 main parts divided specifically: Add Data & Upload File. In each part,
 
 <br />
 
-
-
 ### :heavy_check_mark:Add Data:
 
 In this field, we use some features, such as:
@@ -182,7 +185,7 @@ In this field, we use some features, such as:
 
 ![add_data](https://github.com/dtnghia2010/DataVisualization/assets/126145844/aa148ada-f1bc-40b2-bbab-88f499348f97)
 
-
+<br />
 
 ### :heavy_check_mark:Upload File:
 
@@ -192,7 +195,7 @@ We need to provide a file that has the '.csv' extension. Therefore, the algorith
 
 ![upload_file](https://github.com/dtnghia2010/DataVisualization/assets/126145844/68701b3c-c8ef-4f31-9d2a-046334640392)
 
-
+<br />
 
 ### :heavy_check_mark:Extra Feature: Linear Regression Algorithms:
 
@@ -218,6 +221,7 @@ Similar to the Upload File section, we also need to input a file with the extens
 - Using platform for communication
 <br />
 
+
 ## 6. Acknowledgments<a name="Acknowledgments">:brain:
 <div style="text-align:justify">
 We would want to express our gratitude to Dr. Vi Chi Thanh for providing us with the chance to
@@ -231,6 +235,8 @@ participate in this project and apply what we learned in theory into practice.
 - [Django tutorial](https://youtube.com/playlist?list=PL-osiE80TeTtoQCKZ03TU5fNfx2UY6U4p&si=RdGOno3cRHiOUGgr)
 - [Add Data & Chart](https://www.youtube.com/watch?v=a1j8g01ics4&t=1817s)
 - [Read '.csv' file](https://www.youtube.com/watch?v=Y7OAk7DiLJs&t=1474s)
+- [Django and matplotlib integration](https://www.youtube.com/watch?v=jrT6NiM46jk&list=PL_yx8AXzzvNxJ0bA4-WKsJ7cpQm8w0Ef5&index=23)
+- [Linear Regression Implementation From Scratch using Python](https://www.geeksforgeeks.org/linear-regression-implementation-from-scratch-using-python/)
 
 <br />
 
