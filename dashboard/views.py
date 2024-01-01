@@ -302,9 +302,10 @@ def search_page_upload(request):
                           {'listlabels': labels, 'listdatas': datas, 'selected_data': selected_data,
                            'error_message': error_message, 'value_a': value_a, 'value_b': value_b})
 
-        except (ValueError, TypeError) as e:
-            # Xử lý giá trị nhập không hợp lệ
-            return HttpResponse(f"Lỗi: {e}")
+
+        except (ValueError, TypeError):
+
+            return HttpResponse("Invalid input values. Please enter valid integers for 'a' and 'b'.")
 
     # Render form khi request là GET
     return render(request, 'dashboard/search_page_upload.html', {'error_message': error_message})
