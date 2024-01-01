@@ -1,5 +1,5 @@
 from django.core.checks import messages
-from .forms import Add_DataFrom, sortingForm, DeleteForm_AddData
+from .forms import Add_DataFrom, DeleteForm_AddData
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
