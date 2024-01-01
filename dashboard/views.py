@@ -84,12 +84,10 @@ def upload_file(request):
     global attribute1, attribute2, namechart
     listlabels, listdatas = None, None
     Upload_File.objects.all().delete()
-    namechart = nameChart()
     if request.method == 'POST':
         uploaded_file = request.FILES['document']
         attribute1 = request.POST.get('attribute1')
         attribute2 = request.POST.get('attribute2')
-        namechart =  nameChart(request.POST)
 
         if uploaded_file.name.endswith('csv'):
             savefile = FileSystemStorage()
@@ -100,7 +98,7 @@ def upload_file(request):
             return redirect(uploadFile_algorithms)
         else:
             messages.warning(request, 'File was not uploaded, please use a CSV file extension')
-    return render(request, "dashboard/upload_file.html", {"name": namechart})
+    return render(request, "dashboard/upload_file.html")
 
 
 def uploadFile_algorithms(request):
@@ -112,7 +110,7 @@ def uploadFile_algorithms(request):
 
     labels, datas = process_data(attribute1, attribute2)
     listlabels, listdatas = prepare_chart_data(labels, datas)
-    return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels': listlabels, 'listdatas': listdatas, "name": nameChart})
+    return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels': listlabels, 'listdatas': listdatas})
 
 
 def predict_data(request, *args, **kwargs):
