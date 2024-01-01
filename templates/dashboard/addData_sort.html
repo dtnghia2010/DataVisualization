@@ -33,7 +33,7 @@
         Algorithms
     </a>
     <div class="dropdown-menu">
-        <a class="dropdown-item text-center" href="sorting/Add">Sort</a>
+        <a class="dropdown-item text-center" href="#">Sort</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item text-center" href="{% url 'search_add_data' %}">Search</a>
     </div>
@@ -49,10 +49,17 @@
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: {{ listlabels|safe }},
+            labels: [
+                {% for label in listlabels %}
+                    '{{ label }}',
+                {% endfor %}
+            ],
             datasets: [{
                 label: 'Population',
-                data: {{ listdatas|safe }},
+                data: [{% for data in listdatas %}
+                        {{ data }},
+                    {% endfor %}
+                ],
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1

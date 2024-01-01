@@ -56,6 +56,7 @@ def add_data(request):
 
 
 def addData_algorithms(request):
+    data_for_chart = Add_Data.objects.all()
     return render(request, 'dashboard/addData_algorithms.html', {'data': data_for_chart, 'form': form})
 
 
@@ -308,7 +309,6 @@ def search_page_upload(request):
     # Render form khi request là GET
     return render(request, 'dashboard/search_page_upload.html', {'error_message': error_message})
 
-
 def search_add_data(request):
     if request.method == 'POST':
         try:
@@ -374,14 +374,14 @@ def processingUpload(request):
             data_toSort = Upload_File.objects.all()
             data_list = [(dt.attribute2, dt.attribute1) for dt in data_toSort]
             listlabels, listdatas = processSort(data_list)
-            return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels':listlabels, 'listdatas':listdatas})
+            return render(request, 'dashboard/upload_sort.html', {'listlabels':listlabels, 'listdatas':listdatas})
 
 def processingAdd(request):
             data_toSort = Add_Data.objects.all()
             data_list = [(dt.population, dt.country) for dt in data_toSort]
 
             listlabels, listdatas = processSort(data_list)
-            return render(request, 'dashboard/upload_sort.html', {'listlabels':listlabels, 'listdatas':listdatas})
+            return render(request, 'dashboard/addData_sort.html', {'listlabels':listlabels, 'listdatas':listdatas})
 
 def processSort(data_list):
     # data_Dict = dict(data_toSort)
