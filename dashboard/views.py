@@ -29,7 +29,6 @@ def add_data(request):
     global data_for_chart, form
 
     data = Add_Data.objects.all()
-    formSort = sortingForm()
 
     if request.method == 'POST':
         form = Add_DataFrom(request.POST)
@@ -51,7 +50,6 @@ def add_data(request):
     context = {
         'data': data,
         'form': form,
-        'formSorting': sortingForm,
     }
 
     return render(request, 'dashboard/add_data.html', context)
@@ -87,9 +85,7 @@ def upload_file(request):
     global attribute1, attribute2
 
     listlabels, listdatas = None, None
-    formSorting = sortingForm()
     Upload_File.objects.all().delete()
-
     if request.method == 'POST':
         uploaded_file = request.FILES['document']
         attribute1 = request.POST.get('attribute1')
@@ -198,11 +194,11 @@ def readfile(filename):
 def process_data(attribute1, attribute2):
     labels = []
     datas = []
-    for x in data[attribute1]:  # name
-        labels.append(x)
+    for x_data in data[attribute1]:  # name
+        labels.append(x_data)
 
-    for y in data[attribute2]:  # price
-        datas.append(y)
+    for y_data in data[attribute2]:  # price
+        datas.append(y_data)
 
     return labels, datas
 
@@ -215,28 +211,29 @@ def prepare_chart_data(labels, datas):
     return listlabels, listdatas
 
 
-def quicksort_(array, low, high):
+
+def quicksort_(array, low, high, attribute_index):
     array_len = len(array)
 
     if low < high:
-        pi = partition_(array, low, high)
-        quicksort_(array, low, pi - 1)
+        pi = partition_(array, low, high, attribute_index)
+        quicksort_(array, low, pi - 1, attribute_index)
 
-        quicksort_(array, pi + 1, high)
+        quicksort_(array, pi +1, high, attribute_index)
 
     return array
 
 
-def partition_(array, low, high):
+def partition_(array, low, high, attribute_index):
     # choose the rightmost element as pivot
-    pivot = array[high]
+    pivot = array[high][attribute_index]
 
     # pointer for greater element
     i = low - 1
-    pivot = array[high]
+    pivot = array[high][attribute_index]
 
     for j in range(low, high):
-        if array[j] <= pivot:
+        if array[j][attribute_index] <= pivot:
             # If element smaller than pivot is found
             # swap it with the greater element pointed by i
             i = i + 1
@@ -374,34 +371,51 @@ def search_add_data(request):
 
 
 def processingUpload(request):
-    data = Upload_File.objects.values('attribute2').values_list('attribute2', 'attribute1')
-    listlabels, listdatas = processSort(data)
-    return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels': listlabels, 'listdatas': listdatas})
-
+            data_toSort = Upload_File.objects.all()
+            data_list = [(dt.attribute2, dt.attribute1) for dt in data_toSort]
+            listlabels, listdatas = processSort(data_list)
+            return render(request, 'dashboard/uploadFile_algorithms.html', {'listlabels':listlabels, 'listdatas':listdatas})
 
 def processingAdd(request):
-    data = Add_Data.objects.values('population').values_list('population', 'country')
-    listlabels, listdatas = processSort(data)
-    return render(request, 'dashboard/upload_sort.html', {'listlabels': listlabels, 'listdatas': listdatas})
+            data_toSort = Add_Data.objects.all()
+            data_list = [(dt.population, dt.country) for dt in data_toSort]
 
+            listlabels, listdatas = processSort(data_list)
+            return render(request, 'dashboard/upload_sort.html', {'listlabels':listlabels, 'listdatas':listdatas})
 
-def processSort(data):
-    data_Dict = dict(data)
+def processSort(data_list):
+    # data_Dict = dict(data_toSort)
+    #
+    # print(data_Dict)
+    #
+    # data_List = list(data_Dict.keys())
+    #
+    # data_sorted = quicksort_(data_List, 0, len(data_List) - 1)
+    #
+    # Sorted_dict = {i: data_Dict[i] for i in data_sorted}
+    #
+    # attr1 = []
+    # attr2 = []
+    # for i in Sorted_dict:
+    #     attr1.append(Sorted_dict[i])
+    #     attr2.append(i)
+    #
+    # listlabels, listdatas = prepare_chart_data(attr1, attr2)
+    #
+    # return listlabels, listdatas
 
-    print(data_Dict)
+    if data_list:
+        # Thực hiện Quick Sort
+        quicksort_(data_list, 0, len(data_list) - 1, attribute_index=0)
 
-    data_List = list(data_Dict.keys())
+        # Chuẩn bị dữ liệu cho biểu đồ
+        labels, datas = zip(*data_list)
 
-    data_sorted = quicksort_(data_List, 0, len(data_List) - 1)
+        # In ra giá trị của labels và datas
+        print("Labels:", labels)
+        print("Datas:", datas)
+    else:
+        # Xử lý trường hợp khi data_list rỗng
+        labels, datas = [], []
+    return datas, labels
 
-    Sorted_dict = {i: data_Dict[i] for i in data_sorted}
-
-    attr1 = []
-    attr2 = []
-    for i in Sorted_dict:
-        attr1.append(Sorted_dict[i])
-        attr2.append(i)
-
-    listlabels, listdatas = prepare_chart_data(attr1, attr2)
-
-    return listlabels, listdatas

@@ -74,6 +74,7 @@
                 <form method="POST" class="t">
                     {% csrf_token %}
                     {{ form }}
+                    {{ name}}
                     <hr>
                     <input class="btn but1 " type="submit" value="Add">
                 </form>
