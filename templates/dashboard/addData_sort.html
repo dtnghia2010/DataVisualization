@@ -25,7 +25,7 @@
 
 </style>
 
-<a href="{% url 'uploadFile_algorithms' %}"><i style='font-size:30px; color: rgba(58.58, 61.92, 142.02, 0.90)' class='far back'>&#xf359;</i></a>
+<a href="{% url 'addData_algorithms' %}"><i style='font-size:30px; color: rgba(58.58, 61.92, 142.02, 0.90)' class='far back'>&#xf359;</i></a>
 
 <div class="nav-item dropdown pb-5">
     <a class="nav-link dropdown-toggle text-center a1" href="#" role="button" data-toggle="dropdown"
@@ -33,7 +33,7 @@
         Algorithms
     </a>
     <div class="dropdown-menu">
-        <a class="dropdown-item text-center" href="sorting/Upload">Sort</a>
+        <a class="dropdown-item text-center" href="sorting/Add">Sort</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item text-center" href="{% url 'search_add_data' %}">Search</a>
     </div>
@@ -42,24 +42,17 @@
     <div class="col-md-12">
         <div class="bg-white">
             <div class="card-body">
-                <canvas id="myChart" width="200" height="200"></canvas>
+                <canvas id="myChart" width="500" height="500"></canvas>
 
 <script>
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: [
-                {% for label in listlabels %}
-                    '{{ label }}',
-                {% endfor %}
-            ],
+            labels: {{ listlabels|safe }},
             datasets: [{
                 label: 'Population',
-                data: [{% for data in listdatas %}
-                        {{ data }},
-                    {% endfor %}
-                ],
+                data: {{ listdatas|safe }},
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1
