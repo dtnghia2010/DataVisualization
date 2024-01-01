@@ -58,6 +58,7 @@ def add_data(request):
 
 
 def addData_algorithms(request):
+    data_for_chart = Add_Data.objects.all()
     return render(request, 'dashboard/addData_algorithms.html', {'data': data_for_chart, 'form': form})
 
 
