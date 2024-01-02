@@ -1,5 +1,4 @@
 # models.py
-# models.py
 # Name: 1
 # Duong Trong Nghia ITITIU21256
 # Ngo Thi Thuong ITCSIU21160
