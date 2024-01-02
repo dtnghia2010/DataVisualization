@@ -1,5 +1,10 @@
 # forms.py
-
+# Name: 1
+# Duong Trong Nghia ITITIU21256
+# Ngo Thi Thuong ITCSIU21160
+# Nguyen Pham Ky Phuong ITITIU21287
+# Nguyen Anh Thang ITCSIU21233
+# Purpose: Create forms to take the input.
 from django import forms
 from .models import Add_Data, Upload_File
 
