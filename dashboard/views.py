@@ -1,3 +1,9 @@
+# Name: 1
+# Duong Trong Nghia ITITIU21256
+# Ngo Thi Thuong ITCSIU21160
+# Nguyen Pham Ky Phuong ITITIU21287
+# Nguyen Anh Thang ITCSIU21233
+# Purpose: Use to handle basic logic and show the template (html files).
 from django.core.checks import messages
 from .forms import Add_DataFrom, DeleteForm_AddData
 from django.shortcuts import render, redirect
