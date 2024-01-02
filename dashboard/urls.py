@@ -1,3 +1,10 @@
+# Name: 1
+# Duong Trong Nghia ITITIU21256
+# Ngo Thi Thuong ITCSIU21160
+# Nguyen Pham Ky Phuong ITITIU21287
+# Nguyen Anh Thang ITCSIU21233
+# Purpose: URL file helps connect to the template (html files).
+
 from django.urls import path
 from . import views
 
