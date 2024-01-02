@@ -1,3 +1,9 @@
+# Name: 1
+# Duong Trong Nghia ITITIU21256
+# Ngo Thi Thuong ITCSIU21160
+# Nguyen Pham Ky Phuong ITITIU21287
+# Nguyen Anh Thang ITCSIU21233
+# Purpose: An utility file use to store some logics to use in views.
 # Trong utils.py
 import os
 
