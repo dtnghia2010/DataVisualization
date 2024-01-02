@@ -1,5 +1,11 @@
 # models.py
-
+# models.py
+# Name: 1
+# Duong Trong Nghia ITITIU21256
+# Ngo Thi Thuong ITCSIU21160
+# Nguyen Pham Ky Phuong ITITIU21287
+# Nguyen Anh Thang ITCSIU21233
+# Purpose: Set models for the database.
 from django.db import models
 
 
