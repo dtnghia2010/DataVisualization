@@ -1,3 +1,9 @@
+# Name: 1
+# Duong Trong Nghia ITITIU21256
+# Ngo Thi Thuong ITCSIU21160
+# Nguyen Pham Ky Phuong ITITIU21287
+# Nguyen Anh Thang ITCSIU21233
+# Purpose: Help to run the django project.
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
 import os
